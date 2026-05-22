@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Sisonke Jobs Database</title>
+    
+    <style>
+        /* ==========================================
+           GLASSMORPHISM & GOOGLE COLOR THEME
+           ========================================== */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* Sleek Animated Gradient Background with Google Colors */
+        body {
+            /* Google Blue, Red, Yellow, Green */
+            background: linear-gradient(45deg, #4285F4, #EA4335, #FBBC05, #34A853);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            color: #2d3748;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Reusable Glass Effect Class */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+        }
+
+        #app-view {
+            width: 100%;
+            display: flex;
+            height: 100%;
+            padding: 1rem;
+            gap: 1rem;
+        }
+
+        /* --- Sidebar / Navigation (Glassy) --- */
+        .sidebar {
+            width: 250px;
+            border-radius: 20px;
+            padding: 2rem 1rem;
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+            color: #1a202c;
+        }
+
+        .sidebar h2 { margin-bottom: 2rem; text-align: center; font-weight: 700; font-size: 1.5rem; letter-spacing: -0.5px;}
+        .sidebar ul { list-style: none; }
+        .sidebar ul li { margin-bottom: 0.5rem; }
+        
+        .sidebar ul li a {
+            color: #2d3748;
+            text-decoration: none;
+            display: block;
+            padding: 12px 16px;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid transparent;
+        }
+        
+        .sidebar ul li a:hover, .sidebar ul li a:active { 
+            background: rgba(255, 255, 255, 0.6); 
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+
+        /* --- Main Content Area --- */
+        .content {
+            flex: 1;
+            padding: 2rem;
+            overflow-y: auto;
+            border-radius: 20px;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        h1 { margin-bottom: 1.5rem; font-size: 2rem; font-weight: 700; letter-spacing: -1px; color: #1a202c; }
+
+        /* --- Dashboard Stats --- */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .stat-card {
+            padding: 2rem;
+            border-radius: 20px;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+        
+        .stat-card:hover { transform: translateY(-5px); }
+
+        .stat-card h3 { font-size: 1rem; font-weight: 600; color: #1a202c; text-transform: uppercase; letter-spacing: 1px;}
+        .stat-card p { font-size: 3.5rem; font-weight: 700; color: #4285F4; /* Google Blue */ margin-top: 10px; text-shadow: 1px 1px 2px rgba(255,255,255,0.5); }
+
+        /* --- Glossy Forms --- */
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            padding: 2rem;
+            border-radius: 20px;
+        }
+
+        .form-grid input, .form-grid select, .form-grid textarea {
+            padding: 14px 16px;
+            background: rgba(255, 255, 255, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            border-radius: 12px;
+            width: 100%;
+            font-size: 1rem;
+            color: #2d3748;
+            outline: none;
+            transition: all 0.3s ease;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+        }
+
+        .form-grid input:focus, .form-grid select:focus, .form-grid textarea:focus {
+            background: rgba(255, 255, 255, 0.95);
+            border: 1px solid #4285F4; /* Google Blue highlight */
+            box-shadow: 0 0 0 4px rgba(66, 133, 244, 0.2);
+        }
+
+        .form-grid textarea { grid-column: span 2; resize: vertical; }
+        .full-width { grid-column: span 2; }
+
+        /* --- Glossy Buttons --- */
+        .btn-primary, .btn-secondary {
+            border: none;
+            padding: 14px 24px;
+            cursor: pointer;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 700;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            backdrop-filter: blur(4px);
+        }
+
+        .btn-primary { 
+            background: rgba(66, 133, 244, 0.9); /* Google Blue */
+            color: white; 
+            border: 1px solid rgba(255,255,255,0.3);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .btn-secondary { 
+            background: rgba(52, 168, 83, 0.8); /* Google Green */
+            color: white; 
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .btn-primary:active, .btn-secondary:active { transform: scale(0.98); }
+        .btn-primary:hover { background: #4285F4; box-shadow: 0 8px 25px rgba(66, 133, 244, 0.3); }
+        .btn-secondary:hover { background: #34A853; box-shadow: 0 8px 25px rgba(52, 168, 83, 0.3); }
+        
+        .btn-danger {
+            background: rgba(234, 67, 53, 0.8); /* Google Red */
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        .btn-danger:hover { background: #EA4335; }
+
+        /* --- Sleek Tables & Controls --- */
+        .table-controls { 
+            margin-bottom: 1.5rem; 
+            display: flex; 
+            gap: 15px; 
+            align-items: center;
+        }
+        
+        .table-controls input { 
+            padding: 14px; 
+            flex: 1; 
+            background: rgba(255, 255, 255, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.8); 
+            border-radius: 12px;
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .table-controls input:focus { 
+            background: rgba(255, 255, 255, 0.95); 
+            border-color: #FBBC05; /* Google Yellow highlight */
+            box-shadow: 0 0 0 4px rgba(251, 188, 5, 0.2);
+        }
+        
+        .table-responsive { 
+            overflow-x: auto; 
+            border-radius: 20px; 
+            -webkit-overflow-scrolling: touch;
+        }
+
+        table { width: 100%; border-collapse: collapse; min-width: 700px; }
+        th, td { padding: 16px; text-align: left; border-bottom: 1px solid rgba(0,0,0,0.05); }
+        th { font-weight: 700; color: #1a202c; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.5px; border-bottom: 2px solid rgba(0,0,0,0.1);}
+        tr:hover { background: rgba(255, 255, 255, 0.4); }
+
+        /* ==========================================
+           MOBILE RESPONSIVENESS (Fits all screens)
+           ========================================== */
+        @media (max-width: 768px) {
+            #app-view { flex-direction: column; padding: 0.5rem; gap: 0.5rem; }
+            
+            /* Sidebar converts to sleek top nav */
+            .sidebar { 
+                width: 100%; 
+                padding: 1rem; 
+                flex-direction: column;
+                align-items: center;
+                border-radius: 16px;
+            }
+            
+            .sidebar h2 { margin-bottom: 1rem; font-size: 1.3rem; }
+            
+            /* Horizontal scrolling navigation */
+            .sidebar ul { 
+                display: flex; 
+                flex-direction: row; 
+                width: 100%; 
+                overflow-x: auto; 
+                gap: 8px; 
+                padding-bottom: 5px;
+            }
+            
+            /* Hide scrollbar for a cleaner look on mobile */
+            .sidebar ul::-webkit-scrollbar { display: none; }
+            .sidebar ul { -ms-overflow-style: none; scrollbar-width: none; }
+            .sidebar ul li { margin-bottom: 0; flex: 0 0 auto; }
+            
+            .content { padding: 1rem; border-radius: 16px;}
+            
+            /* Forms stack completely vertical */
+            .form-grid { grid-template-columns: 1fr; padding: 1.5rem 1rem; gap: 1rem;}
+            .form-grid textarea, .full-width { grid-column: span 1; }
+            
+            /* Controls stack */
+            .table-controls { flex-direction: column; align-items: stretch; gap: 10px;}
+            .table-controls button { width: 100%; }
+            
+            h1 { font-size: 1.5rem; text-align: center;}
+            .stat-card p { font-size: 2.5rem; }
+        }
+
+        /* Print Styles */
+        @media print {
+            body { background: white; }
+            .glass-panel { background: none; border: none; box-shadow: none; backdrop-filter: none; }
+            .sidebar, .table-controls, .btn-primary { display: none !important; }
+            .content { padding: 0; overflow-y: visible; }
+            body { height: auto; }
+            table { min-width: 100%; border: 1px solid #ddd; }
+            th, td { border: 1px solid #ddd; padding: 8px; }
+        }
+    </style>
+</head>
+<body>
+
+    <section id="app-view">
+        
+        <nav class="sidebar glass-panel">
+            <h2>Sisonke Jobs</h2>
+            <ul>
+                <li><a href="#" onclick="navigate('dashboard')">Dashboard</a></li>
+                <li><a href="#" onclick="navigate('candidates')">Candidate List</a></li>
+                <li><a href="#" onclick="navigate('add-candidate')">Add CV</a></li>
+            </ul>
+        </nav>
+
+        <main class="content glass-panel">
+            
+            <div id="dashboard" class="sub-view active">
+                <h1>Dashboard</h1>
+                <div class="stats-grid">
+                    <div class="stat-card glass-panel">
+                        <h3>Total CVs Registered</h3>
+                        <p id="stat-total">0</p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="candidates" class="sub-view" style="display: none;">
+                <h1>Candidate Database</h1>
+                
+                <div class="table-controls">
+                    <input type="text" id="search-input" placeholder="Search name, skills, or qualifications..." onkeyup="filterTable()">
+                    <button class="btn-secondary" onclick="exportCSV()">Export CSV</button>
+                    <button class="btn-secondary" onclick="window.print()">Export PDF</button>
+                </div>
+                
+                <div class="table-responsive">
+                    <table id="candidate-table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Surname</th>
+                                <th>Phone</th>
+                                <th>Qualifications</th>
+                                <th>Skills</th>
+                                <th>Job Category</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="candidate-tbody">
+                            </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="add-candidate" class="sub-view" style="display: none;">
+                <h1>Capture New CV Data</h1>
+                <form id="registration-form" class="form-grid glass-panel">
+                    
+                    <input type="text" id="c-name" placeholder="First Name" required>
+                    <input type="text" id="c-surname" placeholder="Surname" required>
+                    
+                    <select id="c-gender" required>
+                        <option value="" disabled selected>Select Gender</option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                        <option value="Other">Other</option>
+                    </select>
+                    
+                    <input type="tel" id="c-phone" placeholder="Phone Number" required>
+                    <input type="tel" id="c-whatsapp" placeholder="WhatsApp Number">
+                    <input type="email" id="c-email" placeholder="Email Address">
+                    <input type="text" id="c-address" placeholder="Physical Address">
+                    <input type="text" id="c-province" placeholder="Province">
+                    
+                    <input type="text" id="c-education" placeholder="Highest Education (e.g., Grade 12)">
+                    <input type="text" id="c-qualifications" placeholder="Qualifications (e.g., BSc IT)">
+                    <input type="text" id="c-skills" placeholder="Skills (comma separated)">
+                    <input type="text" id="c-languages" placeholder="Languages">
+                    <input type="text" id="c-certs" placeholder="Certifications">
+                    <input type="text" id="c-license" placeholder="Driver's License Code">
+                    
+                    <select id="c-status" required>
+                        <option value="" disabled selected>Employment Status</option>
+                        <option value="Unemployed">Unemployed</option>
+                        <option value="Employed">Employed</option>
+                        <option value="Student">Student</option>
+                    </select>
+                    <input type="text" id="c-category" placeholder="Desired Job Category" required>
+                    
+                    <textarea id="c-experience" placeholder="Work Experience" rows="3"></textarea>
+                    <textarea id="c-references" placeholder="References" rows="3"></textarea>
+                    <textarea id="c-notes" placeholder="Admin Notes" rows="3"></textarea>
+
+                    <button type="submit" class="btn-primary full-width">Save CV to Database</button>
+                </form>
+            </div>
+
+        </main>
+    </section>
+
+    <script>
+        let candidates = JSON.parse(localStorage.getItem('sisonke_google_db')) || [];
+
+        function navigate(viewId) {
+            document.querySelectorAll('.sub-view').forEach(view => {
+                view.style.display = 'none';
+            });
+            document.getElementById(viewId).style.display = 'block';
+            
+            if(viewId === 'dashboard') updateDashboard();
+            if(viewId === 'candidates') renderTable();
+            
+            document.querySelector('.content').scrollTo(0,0);
+        }
+
+        document.getElementById('registration-form').addEventListener('submit', function(e) {
+            e.preventDefault(); 
+            
+            const newCandidate = {
+                id: Date.now(),
+                name: document.getElementById('c-name').value,
+                surname: document.getElementById('c-surname').value,
+                gender: document.getElementById('c-gender').value,
+                phone: document.getElementById('c-phone').value,
+                whatsapp: document.getElementById('c-whatsapp').value,
+                email: document.getElementById('c-email').value,
+                address: document.getElementById('c-address').value,
+                province: document.getElementById('c-province').value,
+                education: document.getElementById('c-education').value,
+                qualifications: document.getElementById('c-qualifications').value,
+                skills: document.getElementById('c-skills').value,
+                languages: document.getElementById('c-languages').value,
+                certs: document.getElementById('c-certs').value,
+                license: document.getElementById('c-license').value,
+                status: document.getElementById('c-status').value,
+                category: document.getElementById('c-category').value,
+                experience: document.getElementById('c-experience').value,
+                references: document.getElementById('c-references').value,
+                notes: document.getElementById('c-notes').value,
+                dateAdded: new Date().toLocaleDateString()
+            };
+            
+            candidates.push(newCandidate);
+            saveData();
+            
+            this.reset();
+            alert('CV successfully saved!');
+            navigate('candidates');
+        });
+
+        function saveData() {
+            localStorage.setItem('sisonke_google_db', JSON.stringify(candidates));
+        }
+
+        function updateDashboard() {
+            document.getElementById('stat-total').innerText = candidates.length;
+        }
+
+        function renderTable(dataToRender = candidates) {
+            const tbody = document.getElementById('candidate-tbody');
+            tbody.innerHTML = ''; 
+            
+            dataToRender.forEach(c => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${c.name}</td>
+                    <td>${c.surname}</td>
+                    <td>${c.phone}</td>
+                    <td>${c.qualifications || 'N/A'}</td>
+                    <td>${c.skills || 'N/A'}</td>
+                    <td>${c.category}</td>
+                    <td>
+                        <button class="btn-danger" style="width:100%" onclick="deleteCandidate(${c.id})">Delete</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function filterTable() {
+            const query = document.getElementById('search-input').value.toLowerCase();
+            
+            const filtered = candidates.filter(c => 
+                c.name.toLowerCase().includes(query) || 
+                c.surname.toLowerCase().includes(query) ||
+                c.category.toLowerCase().includes(query) ||
+                c.skills.toLowerCase().includes(query) || 
+                c.qualifications.toLowerCase().includes(query)
+            );
+            
+            renderTable(filtered);
+        }
+
+        function deleteCandidate(id) {
+            if(confirm('Delete this CV? This action cannot be undone.')) {
+                candidates = candidates.filter(c => c.id !== id);
+                saveData();
+                renderTable();
+                updateDashboard();
+            }
+        }
+
+        function exportCSV() {
+            if (candidates.length === 0) {
+                alert("No data to export!");
+                return;
+            }
+            
+            let csvContent = "data:text/csv;charset=utf-8,";
+            csvContent += "Name,Surname,Phone,Qualifications,Skills,Category,Date Added\n";
+            
+            candidates.forEach(c => {
+                let row = `${c.name},${c.surname},${c.phone},"${c.qualifications}","${c.skills}",${c.category},${c.dateAdded}`;
+                csvContent += row + "\n";
+            });
+            
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", "sisonke_cv_database.csv");
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        // Initialize App
+        updateDashboard();
+        renderTable();
+    </script>
+</body>
+</html>
