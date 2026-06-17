@@ -1,518 +1,1388 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Sisonke Jobs Database</title>
-    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <meta name="description" content="AI-Powered Employment Intelligence Platform">
+    <meta name="theme-color" content="#4285F4">
+    <title>Nexus AI | Employment Intelligence Platform</title>
+
+    <!-- External Libraries -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Tailwind Config for Theme & Colors -->
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Poppins', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            blue: '#4285F4', red: '#EA4335', yellow: '#FBBC05', green: '#34A853',
+                            dark: '#0B0F19', glass: 'rgba(255, 255, 255, 0.7)'
+                        }
+                    },
+                    animation: {
+                        'blob': 'blob 10s infinite',
+                        'fade-in': 'fadeIn 0.4s ease-out forwards',
+                        'slide-up': 'slideUp 0.5s ease-out forwards',
+                    },
+                    keyframes: {
+                        blob: {
+                            '0%': { transform: 'translate(0px, 0px) scale(1)' },
+                            '33%': { transform: 'translate(30px, -50px) scale(1.1)' },
+                            '66%': { transform: 'translate(-20px, 20px) scale(0.9)' },
+                            '100%': { transform: 'translate(0px, 0px) scale(1)' }
+                        },
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' }
+                        },
+                        slideUp: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
     <style>
-        /* ==========================================
-           GLASSMORPHISM & GOOGLE COLOR THEME
-           ========================================== */
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            -webkit-tap-highlight-color: transparent;
+        /* Base & Glassmorphism Styles */
+        :root {
+            --glass-bg: rgba(255, 255, 255, 0.65);
+            --glass-border: rgba(255, 255, 255, 0.4);
+            --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
         }
-
-        /* Sleek Animated Gradient Background with Google Colors */
+        .dark {
+            --glass-bg: rgba(17, 24, 39, 0.75);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+        }
         body {
-            /* Google Blue, Red, Yellow, Green */
-            background: linear-gradient(45deg, #4285F4, #EA4335, #FBBC05, #34A853);
-            background-size: 400% 400%;
-            animation: gradientBG 15s ease infinite;
-            color: #2d3748;
-            display: flex;
-            height: 100vh;
-            overflow: hidden;
+            background-color: #f3f4f6;
+            color: #1f2937;
+            overflow-x: hidden;
+            transition: background-color 0.3s ease;
         }
-
-        @keyframes gradientBG {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        /* Reusable Glass Effect Class */
+        .dark body { background-color: #0f172a; color: #f8fafc; }
+        
+        /* Glass Panel */
         .glass-panel {
-            background: rgba(255, 255, 255, 0.4);
+            background: var(--glass-bg);
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
-        }
-
-        #app-view {
-            width: 100%;
-            display: flex;
-            height: 100%;
-            padding: 1rem;
-            gap: 1rem;
-        }
-
-        /* --- Sidebar / Navigation (Glassy) --- */
-        .sidebar {
-            width: 250px;
-            border-radius: 20px;
-            padding: 2rem 1rem;
-            display: flex;
-            flex-direction: column;
-            flex-shrink: 0;
-            color: #1a202c;
-        }
-
-        .sidebar h2 { margin-bottom: 2rem; text-align: center; font-weight: 700; font-size: 1.5rem; letter-spacing: -0.5px;}
-        .sidebar ul { list-style: none; }
-        .sidebar ul li { margin-bottom: 0.5rem; }
-        
-        .sidebar ul li a {
-            color: #2d3748;
-            text-decoration: none;
-            display: block;
-            padding: 12px 16px;
-            border-radius: 12px;
-            transition: all 0.3s ease;
-            font-weight: 600;
-            background: rgba(255, 255, 255, 0.2);
-            border: 1px solid transparent;
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--glass-shadow);
         }
         
-        .sidebar ul li a:hover, .sidebar ul li a:active { 
-            background: rgba(255, 255, 255, 0.6); 
-            border: 1px solid rgba(255, 255, 255, 0.5);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-        }
+        /* Background Blobs */
+        .bg-shapes { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1; overflow: hidden; pointer-events: none; }
+        .blob { position: absolute; filter: blur(80px); border-radius: 50%; opacity: 0.6; }
+        .dark .blob { opacity: 0.3; }
+        .blob-1 { top: -10%; left: -10%; width: 50vw; height: 50vw; background: #4285F4; animation: blob 15s infinite; }
+        .blob-2 { bottom: -10%; right: -10%; width: 40vw; height: 40vw; background: #34A853; animation: blob 18s infinite alternate; }
+        .blob-3 { top: 40%; left: 40%; width: 30vw; height: 30vw; background: #EA4335; animation: blob 20s infinite alternate-reverse; }
 
-        /* --- Main Content Area --- */
-        .content {
-            flex: 1;
-            padding: 2rem;
-            overflow-y: auto;
-            border-radius: 20px;
-            -webkit-overflow-scrolling: touch;
-        }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        .dark ::-webkit-scrollbar-thumb { background: #475569; }
 
-        h1 { margin-bottom: 1.5rem; font-size: 2rem; font-weight: 700; letter-spacing: -1px; color: #1a202c; }
-
-        /* --- Dashboard Stats --- */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1.5rem;
-        }
-
-        .stat-card {
-            padding: 2rem;
-            border-radius: 20px;
-            text-align: center;
-            transition: transform 0.3s ease;
-        }
+        /* UI Utilities */
+        .hidden-view { display: none !important; }
+        .input-glass { background: rgba(255,255,255,0.5); border: 1px solid rgba(0,0,0,0.1); transition: all 0.2s; }
+        .dark .input-glass { background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); color: white; }
+        .input-glass:focus { outline: none; border-color: #4285F4; box-shadow: 0 0 0 3px rgba(66, 133, 244, 0.2); }
         
-        .stat-card:hover { transform: translateY(-5px); }
-
-        .stat-card h3 { font-size: 1rem; font-weight: 600; color: #1a202c; text-transform: uppercase; letter-spacing: 1px;}
-        .stat-card p { font-size: 3.5rem; font-weight: 700; color: #4285F4; /* Google Blue */ margin-top: 10px; text-shadow: 1px 1px 2px rgba(255,255,255,0.5); }
-
-        /* --- Glossy Forms --- */
-        .form-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1.5rem;
-            padding: 2rem;
-            border-radius: 20px;
+        /* AI Loader */
+        .ai-pulse {
+            background: linear-gradient(90deg, #4285F4, #EA4335, #FBBC05, #34A853);
+            background-size: 300% 300%;
+            animation: gradientMove 2s ease infinite;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
-
-        .form-grid input, .form-grid select, .form-grid textarea {
-            padding: 14px 16px;
-            background: rgba(255, 255, 255, 0.6);
-            border: 1px solid rgba(255, 255, 255, 0.8);
-            border-radius: 12px;
-            width: 100%;
-            font-size: 1rem;
-            color: #2d3748;
-            outline: none;
-            transition: all 0.3s ease;
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
-        }
-
-        .form-grid input:focus, .form-grid select:focus, .form-grid textarea:focus {
-            background: rgba(255, 255, 255, 0.95);
-            border: 1px solid #4285F4; /* Google Blue highlight */
-            box-shadow: 0 0 0 4px rgba(66, 133, 244, 0.2);
-        }
-
-        .form-grid textarea { grid-column: span 2; resize: vertical; }
-        .full-width { grid-column: span 2; }
-
-        /* --- Glossy Buttons --- */
-        .btn-primary, .btn-secondary {
-            border: none;
-            padding: 14px 24px;
-            cursor: pointer;
-            border-radius: 12px;
-            font-size: 1rem;
-            font-weight: 700;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            backdrop-filter: blur(4px);
-        }
-
-        .btn-primary { 
-            background: rgba(66, 133, 244, 0.9); /* Google Blue */
-            color: white; 
-            border: 1px solid rgba(255,255,255,0.3);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        }
+        @keyframes gradientMove { 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
         
-        .btn-secondary { 
-            background: rgba(52, 168, 83, 0.8); /* Google Green */
-            color: white; 
-            border: 1px solid rgba(255,255,255,0.2);
-        }
-
-        .btn-primary:active, .btn-secondary:active { transform: scale(0.98); }
-        .btn-primary:hover { background: #4285F4; box-shadow: 0 8px 25px rgba(66, 133, 244, 0.3); }
-        .btn-secondary:hover { background: #34A853; box-shadow: 0 8px 25px rgba(52, 168, 83, 0.3); }
-        
-        .btn-danger {
-            background: rgba(234, 67, 53, 0.8); /* Google Red */
-            color: white;
-            border: none;
-            padding: 10px 15px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: all 0.3s;
-        }
-        .btn-danger:hover { background: #EA4335; }
-
-        /* --- Sleek Tables & Controls --- */
-        .table-controls { 
-            margin-bottom: 1.5rem; 
-            display: flex; 
-            gap: 15px; 
-            align-items: center;
-        }
-        
-        .table-controls input { 
-            padding: 14px; 
-            flex: 1; 
-            background: rgba(255, 255, 255, 0.6);
-            border: 1px solid rgba(255, 255, 255, 0.8); 
-            border-radius: 12px;
-            font-size: 1rem;
-            outline: none;
-            transition: all 0.3s ease;
-        }
-
-        .table-controls input:focus { 
-            background: rgba(255, 255, 255, 0.95); 
-            border-color: #FBBC05; /* Google Yellow highlight */
-            box-shadow: 0 0 0 4px rgba(251, 188, 5, 0.2);
-        }
-        
-        .table-responsive { 
-            overflow-x: auto; 
-            border-radius: 20px; 
-            -webkit-overflow-scrolling: touch;
-        }
-
-        table { width: 100%; border-collapse: collapse; min-width: 700px; }
-        th, td { padding: 16px; text-align: left; border-bottom: 1px solid rgba(0,0,0,0.05); }
-        th { font-weight: 700; color: #1a202c; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.5px; border-bottom: 2px solid rgba(0,0,0,0.1);}
-        tr:hover { background: rgba(255, 255, 255, 0.4); }
-
-        /* ==========================================
-           MOBILE RESPONSIVENESS (Fits all screens)
-           ========================================== */
-        @media (max-width: 768px) {
-            #app-view { flex-direction: column; padding: 0.5rem; gap: 0.5rem; }
-            
-            /* Sidebar converts to sleek top nav */
-            .sidebar { 
-                width: 100%; 
-                padding: 1rem; 
-                flex-direction: column;
-                align-items: center;
-                border-radius: 16px;
-            }
-            
-            .sidebar h2 { margin-bottom: 1rem; font-size: 1.3rem; }
-            
-            /* Horizontal scrolling navigation */
-            .sidebar ul { 
-                display: flex; 
-                flex-direction: row; 
-                width: 100%; 
-                overflow-x: auto; 
-                gap: 8px; 
-                padding-bottom: 5px;
-            }
-            
-            /* Hide scrollbar for a cleaner look on mobile */
-            .sidebar ul::-webkit-scrollbar { display: none; }
-            .sidebar ul { -ms-overflow-style: none; scrollbar-width: none; }
-            .sidebar ul li { margin-bottom: 0; flex: 0 0 auto; }
-            
-            .content { padding: 1rem; border-radius: 16px;}
-            
-            /* Forms stack completely vertical */
-            .form-grid { grid-template-columns: 1fr; padding: 1.5rem 1rem; gap: 1rem;}
-            .form-grid textarea, .full-width { grid-column: span 1; }
-            
-            /* Controls stack */
-            .table-controls { flex-direction: column; align-items: stretch; gap: 10px;}
-            .table-controls button { width: 100%; }
-            
-            h1 { font-size: 1.5rem; text-align: center;}
-            .stat-card p { font-size: 2.5rem; }
-        }
-
-        /* Print Styles */
-        @media print {
-            body { background: white; }
-            .glass-panel { background: none; border: none; box-shadow: none; backdrop-filter: none; }
-            .sidebar, .table-controls, .btn-primary { display: none !important; }
-            .content { padding: 0; overflow-y: visible; }
-            body { height: auto; }
-            table { min-width: 100%; border: 1px solid #ddd; }
-            th, td { border: 1px solid #ddd; padding: 8px; }
-        }
+        .status-badge { padding: 4px 10px; border-radius: 99px; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; }
     </style>
 </head>
-<body>
+<body class="antialiased font-sans transition-colors duration-300">
 
-    <section id="app-view">
-        
-        <nav class="sidebar glass-panel">
-            <h2>Sisonke Jobs</h2>
-            <ul>
-                <li><a href="#" onclick="navigate('dashboard')">Dashboard</a></li>
-                <li><a href="#" onclick="navigate('candidates')">Candidate List</a></li>
-                <li><a href="#" onclick="navigate('add-candidate')">Add CV</a></li>
-            </ul>
-        </nav>
+    <!-- Background Blobs -->
+    <div class="bg-shapes">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
 
-        <main class="content glass-panel">
+    <!-- Toast Notifications Container -->
+    <div id="toast-container" class="fixed top-4 right-4 z-50 flex flex-col gap-2"></div>
+
+    <!-- AI Assistant Floating Button -->
+    <button id="ai-chat-btn" class="fixed bottom-6 right-6 w-14 h-14 bg-gradient-to-r from-brand-blue to-purple-600 rounded-full shadow-2xl text-white flex items-center justify-center text-2xl hover:scale-110 transition-transform z-40 hidden">
+        <i class="fa-solid fa-robot"></i>
+    </button>
+
+    <!-- AI Chat Panel -->
+    <div id="ai-chat-panel" class="fixed bottom-24 right-6 w-80 md:w-96 glass-panel rounded-2xl shadow-2xl z-40 flex flex-col hidden transition-all">
+        <div class="p-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center bg-brand-blue text-white rounded-t-2xl">
+            <h3 class="font-display font-semibold flex items-center gap-2"><i class="fa-solid fa-sparkles"></i> Nexus AI Assistant</h3>
+            <button onclick="UI.toggleChat()" class="text-white hover:text-gray-200"><i class="fa-solid fa-times"></i></button>
+        </div>
+        <div id="ai-chat-messages" class="p-4 h-80 overflow-y-auto flex flex-col gap-3 text-sm">
+            <div class="bg-gray-100 dark:bg-gray-800 p-3 rounded-lg rounded-tl-none self-start max-w-[85%] text-gray-800 dark:text-gray-200 shadow-sm">
+                Hello! I'm your AI Employment Assistant. You can ask me to "Find IT graduates", "Show top candidates", or "List open Admin jobs".
+            </div>
+        </div>
+        <div class="p-3 border-t border-gray-200 dark:border-gray-700">
+            <div class="relative">
+                <input type="text" id="ai-chat-input" placeholder="Ask AI anything..." class="w-full pl-4 pr-10 py-2 rounded-full input-glass text-sm" onkeypress="if(event.key==='Enter') AI.handleQuery()">
+                <button onclick="AI.handleQuery()" class="absolute right-2 top-1/2 -translate-y-1/2 text-brand-blue hover:text-brand-dark dark:hover:text-white">
+                    <i class="fa-solid fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================== -->
+    <!-- VIEW: AUTHENTICATION (LOGIN / REGISTER)        -->
+    <!-- ============================================== -->
+    <div id="view-auth" class="min-h-screen flex items-center justify-center p-4">
+        <div class="glass-panel w-full max-w-md rounded-3xl p-8 animate-slide-up relative overflow-hidden">
+            <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-brand-blue via-brand-yellow to-brand-green"></div>
             
-            <div id="dashboard" class="sub-view active">
-                <h1>Dashboard</h1>
-                <div class="stats-grid">
-                    <div class="stat-card glass-panel">
-                        <h3>Total CVs Registered</h3>
-                        <p id="stat-total">0</p>
+            <div class="text-center mb-8">
+                <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-blue-100 text-brand-blue text-3xl mb-4 shadow-inner">
+                    <i class="fa-solid fa-network-wired"></i>
+                </div>
+                <h1 class="text-3xl font-display font-bold text-gray-900 dark:text-white">Nexus Hub</h1>
+                <p class="text-sm text-gray-500 dark:text-gray-400 mt-2">AI-Powered Employment Intelligence</p>
+            </div>
+
+            <!-- Login Form -->
+            <form id="form-login" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wide mb-1">Email</label>
+                    <input type="email" id="login-email" class="w-full px-4 py-3 rounded-xl input-glass" placeholder="admin@nexus.co.za" required>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wide mb-1">Password</label>
+                    <input type="password" id="login-pass" class="w-full px-4 py-3 rounded-xl input-glass" placeholder="••••••••" required>
+                </div>
+                <div class="flex items-center justify-between text-sm">
+                    <label class="flex items-center text-gray-600 dark:text-gray-400 cursor-pointer">
+                        <input type="checkbox" class="mr-2 rounded text-brand-blue focus:ring-brand-blue"> Remember me
+                    </label>
+                    <a href="#" class="text-brand-blue hover:underline font-medium">Forgot Password?</a>
+                </div>
+                <button type="submit" class="w-full bg-brand-blue hover:bg-blue-600 text-white font-bold py-3 px-4 rounded-xl shadow-lg transition-all transform hover:-translate-y-1 flex justify-center items-center gap-2">
+                    <i class="fa-solid fa-right-to-bracket"></i> Sign In
+                </button>
+            </form>
+
+            <!-- Register Form (Hidden by default) -->
+            <form id="form-register" class="space-y-4 hidden-view">
+                <div class="grid grid-cols-2 gap-2 mb-2">
+                    <button type="button" onclick="UI.setRegRole('candidate')" id="btn-reg-cand" class="py-2 border-2 border-brand-blue bg-blue-50 text-brand-blue rounded-lg font-semibold text-sm transition-colors dark:bg-blue-900/30">Candidate</button>
+                    <button type="button" onclick="UI.setRegRole('employer')" id="btn-reg-emp" class="py-2 border-2 border-transparent bg-gray-100 text-gray-500 rounded-lg font-semibold text-sm hover:bg-gray-200 transition-colors dark:bg-gray-800 dark:text-gray-400">Employer</button>
+                </div>
+                <input type="hidden" id="reg-role" value="candidate">
+                
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wide mb-1">Full Name / Company Name</label>
+                    <input type="text" id="reg-name" class="w-full px-4 py-3 rounded-xl input-glass" placeholder="John Doe" required>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wide mb-1">Email</label>
+                    <input type="email" id="reg-email" class="w-full px-4 py-3 rounded-xl input-glass" placeholder="john@example.com" required>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wide mb-1">Password</label>
+                    <input type="password" id="reg-pass" class="w-full px-4 py-3 rounded-xl input-glass" placeholder="••••••••" minlength="6" required>
+                </div>
+                <button type="submit" class="w-full bg-brand-green hover:bg-green-600 text-white font-bold py-3 px-4 rounded-xl shadow-lg transition-all transform hover:-translate-y-1">
+                    Create Account
+                </button>
+            </form>
+
+            <div class="mt-6 text-center text-sm text-gray-600 dark:text-gray-400">
+                <span id="auth-switch-text">Don't have an account?</span> 
+                <button onclick="UI.toggleAuth()" class="text-brand-blue font-bold hover:underline" id="btn-auth-switch">Register</button>
+            </div>
+            
+            <!-- Quick Demo Login -->
+            <div class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700 flex flex-wrap justify-center gap-2">
+                <button onclick="Auth.demoLogin('admin@nexus.co.za')" class="text-xs bg-gray-200 dark:bg-gray-700 px-3 py-1 rounded-full hover:bg-gray-300 dark:hover:bg-gray-600 transition">Admin Demo</button>
+                <button onclick="Auth.demoLogin('emp@nexus.co.za')" class="text-xs bg-gray-200 dark:bg-gray-700 px-3 py-1 rounded-full hover:bg-gray-300 dark:hover:bg-gray-600 transition">Employer Demo</button>
+                <button onclick="Auth.demoLogin('cand@nexus.co.za')" class="text-xs bg-gray-200 dark:bg-gray-700 px-3 py-1 rounded-full hover:bg-gray-300 dark:hover:bg-gray-600 transition">Candidate Demo</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================== -->
+    <!-- VIEW: MAIN DASHBOARD LAYOUT                    -->
+    <!-- ============================================== -->
+    <div id="view-dashboard" class="hidden-view min-h-screen flex flex-col md:flex-row">
+        
+        <!-- Sidebar Navigation -->
+        <aside class="w-full md:w-64 glass-panel md:min-h-screen border-r border-gray-200 dark:border-gray-700 flex flex-col sticky top-0 z-30">
+            <div class="p-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
+                <div class="font-display font-bold text-xl text-brand-blue flex items-center gap-2">
+                    <i class="fa-solid fa-network-wired"></i> Nexus
+                </div>
+                <button class="md:hidden text-gray-500" onclick="document.getElementById('mobile-menu').classList.toggle('hidden')">
+                    <i class="fa-solid fa-bars text-xl"></i>
+                </button>
+            </div>
+            
+            <div id="mobile-menu" class="hidden md:flex flex-col flex-1 py-4 overflow-y-auto">
+                <!-- User Profile Snippet -->
+                <div class="px-6 pb-4 mb-2 border-b border-gray-200 dark:border-gray-700 text-center">
+                    <div class="w-16 h-16 mx-auto bg-gradient-to-br from-brand-blue to-purple-500 rounded-full flex items-center justify-center text-white text-xl font-bold shadow-md mb-2" id="nav-avatar">A</div>
+                    <h3 class="font-semibold text-gray-800 dark:text-gray-100 truncate" id="nav-name">Admin User</h3>
+                    <span class="text-xs font-medium px-2 py-1 bg-blue-100 text-blue-800 rounded-full mt-1 inline-block" id="nav-role">Super Admin</span>
+                </div>
+
+                <!-- Dynamic Nav Links -->
+                <nav class="flex-1 px-4 space-y-1" id="nav-links">
+                    <!-- Injected via JS based on role -->
+                </nav>
+
+                <div class="px-4 mt-auto pt-4 border-t border-gray-200 dark:border-gray-700">
+                    <button onclick="UI.toggleTheme()" class="w-full text-left px-4 py-2 text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors flex items-center gap-3">
+                        <i class="fa-solid fa-moon"></i> Toggle Theme
+                    </button>
+                    <button onclick="Auth.logout()" class="w-full text-left px-4 py-2 mt-1 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors flex items-center gap-3 font-semibold">
+                        <i class="fa-solid fa-arrow-right-from-bracket"></i> Sign Out
+                    </button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="flex-1 p-4 md:p-8 overflow-y-auto h-screen relative" id="main-content">
+            <!-- Panels will be injected/toggled here -->
+            
+            <!-- PANEL: ADMIN DASHBOARD -->
+            <div id="panel-admin" class="hidden-view animate-fade-in space-y-6">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
+                    <div>
+                        <h2 class="text-2xl font-display font-bold text-gray-800 dark:text-white">Platform Intelligence</h2>
+                        <p class="text-gray-500 dark:text-gray-400 text-sm">Real-time recruitment analytics and system health.</p>
+                    </div>
+                    <div class="mt-4 md:mt-0 flex gap-2">
+                        <button onclick="DB.exportBackup()" class="bg-gray-800 dark:bg-gray-700 text-white px-4 py-2 rounded-lg text-sm font-medium hover:shadow-lg transition-all"><i class="fa-solid fa-download mr-1"></i> Export DB</button>
+                        <button onclick="document.getElementById('import-db-file').click()" class="bg-brand-blue text-white px-4 py-2 rounded-lg text-sm font-medium hover:shadow-lg transition-all"><i class="fa-solid fa-upload mr-1"></i> Import DB</button>
+                        <input type="file" id="import-db-file" class="hidden" accept=".json" onchange="DB.importBackup(event)">
+                    </div>
+                </div>
+
+                <!-- KPI Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div class="glass-panel p-5 rounded-2xl border-l-4 border-l-brand-blue flex items-center justify-between">
+                        <div><p class="text-sm text-gray-500 font-semibold uppercase">Total Candidates</p><h3 class="text-3xl font-bold mt-1" id="kpi-candidates">0</h3></div>
+                        <div class="w-12 h-12 rounded-full bg-blue-100 text-brand-blue flex items-center justify-center text-xl"><i class="fa-solid fa-users"></i></div>
+                    </div>
+                    <div class="glass-panel p-5 rounded-2xl border-l-4 border-l-brand-green flex items-center justify-between">
+                        <div><p class="text-sm text-gray-500 font-semibold uppercase">Active Employers</p><h3 class="text-3xl font-bold mt-1" id="kpi-employers">0</h3></div>
+                        <div class="w-12 h-12 rounded-full bg-green-100 text-brand-green flex items-center justify-center text-xl"><i class="fa-solid fa-building"></i></div>
+                    </div>
+                    <div class="glass-panel p-5 rounded-2xl border-l-4 border-l-brand-yellow flex items-center justify-between">
+                        <div><p class="text-sm text-gray-500 font-semibold uppercase">Open Vacancies</p><h3 class="text-3xl font-bold mt-1" id="kpi-jobs">0</h3></div>
+                        <div class="w-12 h-12 rounded-full bg-yellow-100 text-brand-yellow flex items-center justify-center text-xl"><i class="fa-solid fa-briefcase"></i></div>
+                    </div>
+                    <div class="glass-panel p-5 rounded-2xl border-l-4 border-l-purple-500 flex items-center justify-between">
+                        <div><p class="text-sm text-gray-500 font-semibold uppercase">AI Match Rate</p><h3 class="text-3xl font-bold mt-1">94%</h3></div>
+                        <div class="w-12 h-12 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center text-xl"><i class="fa-solid fa-brain"></i></div>
+                    </div>
+                </div>
+
+                <!-- Charts -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
+                    <div class="glass-panel p-5 rounded-2xl">
+                        <h3 class="font-semibold text-gray-800 dark:text-gray-200 mb-4">Demographics: Employment Status</h3>
+                        <div class="relative h-64"><canvas id="chart-status"></canvas></div>
+                    </div>
+                    <div class="glass-panel p-5 rounded-2xl">
+                        <h3 class="font-semibold text-gray-800 dark:text-gray-200 mb-4">Top Platform Skills</h3>
+                        <div class="relative h-64"><canvas id="chart-skills"></canvas></div>
+                    </div>
+                </div>
+                
+                <!-- System Logs / Recent Activity -->
+                <div class="glass-panel p-5 rounded-2xl mt-6">
+                    <h3 class="font-semibold text-gray-800 dark:text-gray-200 mb-4">Recent AI Activity Logs</h3>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                            <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-800/50 dark:text-gray-300 rounded-t-lg">
+                                <tr><th class="px-4 py-3">Timestamp</th><th class="px-4 py-3">Event</th><th class="px-4 py-3">User</th><th class="px-4 py-3">AI Confidence</th></tr>
+                            </thead>
+                            <tbody id="admin-logs-body">
+                                <!-- Dynamic rows -->
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
 
-            <div id="candidates" class="sub-view" style="display: none;">
-                <h1>Candidate Database</h1>
-                
-                <div class="table-controls">
-                    <input type="text" id="search-input" placeholder="Search name, skills, or qualifications..." onkeyup="filterTable()">
-                    <button class="btn-secondary" onclick="exportCSV()">Export CSV</button>
-                    <button class="btn-secondary" onclick="window.print()">Export PDF</button>
+            <!-- PANEL: CANDIDATE PORTAL (CV Upload & Profile) -->
+            <div id="panel-candidate" class="hidden-view animate-fade-in max-w-4xl mx-auto">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl font-display font-bold">My Career Profile</h2>
+                    <span id="cand-overall-score" class="px-4 py-2 rounded-full bg-gradient-to-r from-brand-blue to-purple-600 text-white font-bold shadow-lg">AI Score: --</span>
                 </div>
                 
-                <div class="table-responsive">
-                    <table id="candidate-table">
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Surname</th>
-                                <th>Phone</th>
-                                <th>Qualifications</th>
-                                <th>Skills</th>
-                                <th>Job Category</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="candidate-tbody">
-                            </tbody>
-                    </table>
+                <!-- AI Smart Uploader -->
+                <div class="glass-panel rounded-2xl p-6 border-2 border-dashed border-brand-blue/50 hover:border-brand-blue transition-colors text-center relative overflow-hidden group cursor-pointer mb-6" onclick="document.getElementById('cv-upload').click()">
+                    <input type="file" id="cv-upload" accept=".pdf" class="hidden" onchange="AI.handleCVUpload(event)">
+                    <div class="absolute inset-0 bg-brand-blue/5 group-hover:bg-brand-blue/10 transition-colors"></div>
+                    <div class="relative z-10 py-8">
+                        <div class="w-16 h-16 mx-auto bg-blue-100 text-brand-blue rounded-full flex items-center justify-center text-3xl mb-4 group-hover:scale-110 transition-transform">
+                            <i class="fa-solid fa-cloud-arrow-up"></i>
+                        </div>
+                        <h3 class="text-lg font-bold text-gray-800 dark:text-white" id="cv-upload-title">Smart CV Upload</h3>
+                        <p class="text-sm text-gray-500 mt-2" id="cv-upload-desc">Upload your PDF. Our AI will automatically extract your skills, experience, and qualifications.</p>
+                        
+                        <!-- AI Processing Animation -->
+                        <div id="cv-processing" class="hidden mt-4">
+                            <div class="flex justify-center gap-1 mb-2">
+                                <div class="w-2 h-2 bg-brand-blue rounded-full animate-bounce" style="animation-delay: 0s"></div>
+                                <div class="w-2 h-2 bg-brand-red rounded-full animate-bounce" style="animation-delay: 0.1s"></div>
+                                <div class="w-2 h-2 bg-brand-yellow rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
+                            </div>
+                            <span class="ai-pulse font-semibold text-sm">Nexus Engine Extracting Intelligence...</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Profile Data Form -->
+                <div class="glass-panel p-6 rounded-2xl mb-6">
+                    <h3 class="font-semibold border-b border-gray-200 dark:border-gray-700 pb-2 mb-4"><i class="fa-regular fa-id-card"></i> Extracted Profile Data</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div><label class="block text-xs font-semibold uppercase text-gray-500 mb-1">Full Name</label><input type="text" id="prof-name" class="w-full px-3 py-2 rounded-lg input-glass text-sm"></div>
+                        <div><label class="block text-xs font-semibold uppercase text-gray-500 mb-1">ID Number</label><input type="text" id="prof-id" class="w-full px-3 py-2 rounded-lg input-glass text-sm"></div>
+                        <div><label class="block text-xs font-semibold uppercase text-gray-500 mb-1">Email</label><input type="email" id="prof-email" class="w-full px-3 py-2 rounded-lg input-glass text-sm"></div>
+                        <div><label class="block text-xs font-semibold uppercase text-gray-500 mb-1">Phone</label><input type="text" id="prof-phone" class="w-full px-3 py-2 rounded-lg input-glass text-sm"></div>
+                        <div>
+                            <label class="block text-xs font-semibold uppercase text-gray-500 mb-1">Location (Province/Town)</label>
+                            <div class="flex gap-2">
+                                <select id="prof-province" class="w-1/2 px-3 py-2 rounded-lg input-glass text-sm">
+                                    <option value="">Province</option>
+                                    <option value="GP">Gauteng</option><option value="WC">Western Cape</option><option value="KZN">KwaZulu-Natal</option><option value="EC">Eastern Cape</option><option value="FS">Free State</option><option value="MP">Mpumalanga</option><option value="NW">North West</option><option value="NC">Northern Cape</option><option value="LP">Limpopo</option>
+                                </select>
+                                <input type="text" id="prof-town" placeholder="Town" class="w-1/2 px-3 py-2 rounded-lg input-glass text-sm">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold uppercase text-gray-500 mb-1">Driver's License</label>
+                            <select id="prof-license" class="w-full px-3 py-2 rounded-lg input-glass text-sm">
+                                <option value="None">None</option><option value="Code 8">Code 8 (B/EB)</option><option value="Code 10">Code 10 (C1/EC1)</option><option value="Code 14">Code 14 (C/EC)</option>
+                            </select>
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block text-xs font-semibold uppercase text-gray-500 mb-1">AI Detected Skills (Comma separated)</label>
+                            <input type="text" id="prof-skills" class="w-full px-3 py-2 rounded-lg input-glass text-sm" placeholder="e.g. Administration, Excel, Customer Service">
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block text-xs font-semibold uppercase text-gray-500 mb-1">Qualifications / Education</label>
+                            <textarea id="prof-edu" class="w-full px-3 py-2 rounded-lg input-glass text-sm" rows="2"></textarea>
+                        </div>
+                    </div>
+                    <div class="mt-4 flex justify-end">
+                        <button onclick="UI.saveCandidateProfile()" class="bg-brand-blue hover:bg-blue-600 text-white font-bold py-2 px-6 rounded-lg shadow transition-all"><i class="fa-solid fa-save mr-1"></i> Save Profile</button>
+                    </div>
+                </div>
+
+                <!-- AI Scores Breakdown -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6" id="cand-scores-container">
+                    <!-- Injected dynamically -->
+                </div>
+
+                <!-- Recommended Jobs -->
+                <h3 class="text-xl font-display font-bold mt-8 mb-4">AI Recommended Jobs</h3>
+                <div id="cand-recommended-jobs" class="space-y-4">
+                    <!-- Jobs Injected Here -->
                 </div>
             </div>
 
-            <div id="add-candidate" class="sub-view" style="display: none;">
-                <h1>Capture New CV Data</h1>
-                <form id="registration-form" class="form-grid glass-panel">
-                    
-                    <input type="text" id="c-name" placeholder="First Name" required>
-                    <input type="text" id="c-surname" placeholder="Surname" required>
-                    
-                    <select id="c-gender" required>
-                        <option value="" disabled selected>Select Gender</option>
-                        <option value="Male">Male</option>
-                        <option value="Female">Female</option>
-                        <option value="Other">Other</option>
-                    </select>
-                    
-                    <input type="tel" id="c-phone" placeholder="Phone Number" required>
-                    <input type="tel" id="c-whatsapp" placeholder="WhatsApp Number">
-                    <input type="email" id="c-email" placeholder="Email Address">
-                    <input type="text" id="c-address" placeholder="Physical Address">
-                    <input type="text" id="c-province" placeholder="Province">
-                    
-                    <input type="text" id="c-education" placeholder="Highest Education (e.g., Grade 12)">
-                    <input type="text" id="c-qualifications" placeholder="Qualifications (e.g., BSc IT)">
-                    <input type="text" id="c-skills" placeholder="Skills (comma separated)">
-                    <input type="text" id="c-languages" placeholder="Languages">
-                    <input type="text" id="c-certs" placeholder="Certifications">
-                    <input type="text" id="c-license" placeholder="Driver's License Code">
-                    
-                    <select id="c-status" required>
-                        <option value="" disabled selected>Employment Status</option>
-                        <option value="Unemployed">Unemployed</option>
-                        <option value="Employed">Employed</option>
-                        <option value="Student">Student</option>
-                    </select>
-                    <input type="text" id="c-category" placeholder="Desired Job Category" required>
-                    
-                    <textarea id="c-experience" placeholder="Work Experience" rows="3"></textarea>
-                    <textarea id="c-references" placeholder="References" rows="3"></textarea>
-                    <textarea id="c-notes" placeholder="Admin Notes" rows="3"></textarea>
+            <!-- PANEL: EMPLOYER - POST JOB & APPLICANTS -->
+            <div id="panel-employer" class="hidden-view animate-fade-in space-y-6">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl font-display font-bold">Employer Workspace</h2>
+                    <button onclick="UI.showModal('modal-post-job')" class="bg-brand-blue hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg shadow transition-all"><i class="fa-solid fa-plus mr-1"></i> Post Vacancy</button>
+                </div>
 
-                    <button type="submit" class="btn-primary full-width">Save CV to Database</button>
-                </form>
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <!-- Active Vacancies -->
+                    <div class="lg:col-span-1 space-y-4">
+                        <h3 class="font-semibold text-gray-700 dark:text-gray-300">My Active Vacancies</h3>
+                        <div id="emp-vacancies-list" class="space-y-3 max-h-[70vh] overflow-y-auto pr-2">
+                            <!-- Injected -->
+                        </div>
+                    </div>
+                    
+                    <!-- Applicant Pipeline Tracker -->
+                    <div class="lg:col-span-2 glass-panel p-6 rounded-2xl">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="font-semibold text-gray-700 dark:text-gray-300" id="pipeline-title">Applicant Pipeline (Select a Job)</h3>
+                            <div class="relative">
+                                <input type="text" id="emp-search-cand" placeholder="AI Search (e.g. 'Code 10 in GP')" class="pl-8 pr-3 py-1 text-sm rounded-full input-glass w-64" oninput="UI.filterApplicants()">
+                                <i class="fa-solid fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs"></i>
+                            </div>
+                        </div>
+                        
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-sm text-left">
+                                <thead class="text-xs text-gray-500 uppercase border-b border-gray-200 dark:border-gray-700">
+                                    <tr>
+                                        <th class="px-4 py-3">Match</th>
+                                        <th class="px-4 py-3">Candidate</th>
+                                        <th class="px-4 py-3">Location</th>
+                                        <th class="px-4 py-3">Status</th>
+                                        <th class="px-4 py-3">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="emp-applicants-body" class="divide-y divide-gray-100 dark:divide-gray-800">
+                                    <!-- Injected -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PANEL: ADVANCED SEARCH / RECRUITER DB -->
+            <div id="panel-search" class="hidden-view animate-fade-in space-y-4 max-w-6xl mx-auto">
+                <h2 class="text-2xl font-display font-bold">Nexus Universal Search</h2>
+                
+                <div class="glass-panel p-4 rounded-xl flex flex-wrap gap-3 items-end border-l-4 border-l-brand-blue">
+                    <div class="flex-1 min-w-[200px]">
+                        <label class="block text-xs font-semibold text-gray-500 mb-1">Semantic Search</label>
+                        <input type="text" id="search-query" class="w-full px-3 py-2 rounded-lg input-glass" placeholder="e.g. Unemployed IT graduates in Gauteng">
+                    </div>
+                    <div class="w-32">
+                        <label class="block text-xs font-semibold text-gray-500 mb-1">Min Score</label>
+                        <input type="number" id="search-score" class="w-full px-3 py-2 rounded-lg input-glass" placeholder="0-100">
+                    </div>
+                    <div>
+                        <button onclick="AI.performUniversalSearch()" class="bg-brand-blue text-white px-6 py-2 rounded-lg font-semibold hover:shadow-lg transition-all h-[42px]"><i class="fa-solid fa-search"></i> Search</button>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="search-results-container">
+                    <!-- Search Results -->
+                    <div class="text-center col-span-full py-12 text-gray-500">
+                        <i class="fa-solid fa-database text-4xl mb-3 opacity-50"></i>
+                        <p>Enter query to search the intelligence database.</p>
+                    </div>
+                </div>
             </div>
 
         </main>
-    </section>
+    </div>
 
+    <!-- ============================================== -->
+    <!-- MODALS                                         -->
+    <!-- ============================================== -->
+    
+    <!-- Modal Backdrop -->
+    <div id="modal-backdrop" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden opacity-0 transition-opacity flex items-center justify-center p-4">
+        
+        <!-- Post Job Modal -->
+        <div id="modal-post-job" class="modal-content glass-panel w-full max-w-lg rounded-2xl shadow-2xl p-6 hidden transform scale-95 transition-transform">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-bold">Create New Vacancy</h3>
+                <button onclick="UI.hideModal()" class="text-gray-500 hover:text-red-500"><i class="fa-solid fa-times"></i></button>
+            </div>
+            <form id="form-post-job" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold text-gray-500 mb-1">Job Title</label>
+                    <input type="text" id="job-title" class="w-full px-3 py-2 rounded-lg input-glass" required>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-500 mb-1">Description</label>
+                    <textarea id="job-desc" rows="3" class="w-full px-3 py-2 rounded-lg input-glass" required></textarea>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-500 mb-1">Required Skills (Comma separated)</label>
+                    <input type="text" id="job-skills" class="w-full px-3 py-2 rounded-lg input-glass" placeholder="Excel, Management, Admin" required>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-500 mb-1">Location</label>
+                        <input type="text" id="job-loc" class="w-full px-3 py-2 rounded-lg input-glass" placeholder="e.g. Pretoria, GP">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-500 mb-1">Min. AI Score Match</label>
+                        <input type="number" id="job-min-score" class="w-full px-3 py-2 rounded-lg input-glass" value="60">
+                    </div>
+                </div>
+                <button type="submit" class="w-full bg-brand-green text-white font-bold py-3 rounded-lg mt-4 shadow-lg hover:bg-green-600 transition-colors">Post Vacancy</button>
+            </form>
+        </div>
+
+        <!-- Candidate Preview Modal -->
+        <div id="modal-cand-preview" class="modal-content glass-panel w-full max-w-2xl rounded-2xl shadow-2xl p-6 hidden transform scale-95 transition-transform">
+            <!-- Content injected dynamically via UI.showCandidate() -->
+        </div>
+
+    </div>
+
+    <!-- ============================================== -->
+    <!-- APPLICATION LOGIC (JavaScript)                 -->
+    <!-- ============================================== -->
     <script>
-        let candidates = JSON.parse(localStorage.getItem('sisonke_google_db')) || [];
+        // -----------------------------------------
+        // 1. UTILITIES & CONFIG
+        // -----------------------------------------
+        const Utils = {
+            escapeHtml: (unsafe) => (unsafe || '').toString().replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;"),
+            generateId: () => 'id_' + Math.random().toString(36).substr(2, 9),
+            hashPassword: async (password) => {
+                const encoder = new TextEncoder();
+                const data = encoder.encode(password);
+                const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+                const hashArray = Array.from(new Uint8Array(hashBuffer));
+                return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+            },
+            showToast: (message, type = 'info') => {
+                const container = document.getElementById('toast-container');
+                const toast = document.createElement('div');
+                const colors = { info: 'bg-blue-500', success: 'bg-brand-green', error: 'bg-brand-red', warning: 'bg-brand-yellow' };
+                const icons = { info: 'fa-info-circle', success: 'fa-check-circle', error: 'fa-exclamation-circle', warning: 'fa-exclamation-triangle' };
+                
+                toast.className = `${colors[type]} text-white px-4 py-3 rounded-lg shadow-lg flex items-center gap-3 transform transition-all duration-300 translate-x-full opacity-0 max-w-sm`;
+                toast.innerHTML = `<i class="fa-solid ${icons[type]}"></i> <span class="text-sm font-medium">${Utils.escapeHtml(message)}</span>`;
+                
+                container.appendChild(toast);
+                // Animate in
+                setTimeout(() => { toast.classList.remove('translate-x-full', 'opacity-0'); }, 10);
+                // Remove
+                setTimeout(() => {
+                    toast.classList.add('translate-x-full', 'opacity-0');
+                    setTimeout(() => toast.remove(), 300);
+                }, 3000);
+            },
+            formatDate: (dateStr) => new Date(dateStr).toLocaleDateString('en-ZA', { year: 'numeric', month: 'short', day: 'numeric' })
+        };
 
-        function navigate(viewId) {
-            document.querySelectorAll('.sub-view').forEach(view => {
-                view.style.display = 'none';
-            });
-            document.getElementById(viewId).style.display = 'block';
-            
-            if(viewId === 'dashboard') updateDashboard();
-            if(viewId === 'candidates') renderTable();
-            
-            document.querySelector('.content').scrollTo(0,0);
-        }
+        // -----------------------------------------
+        // 2. OFFLINE DATABASE (IndexedDB Wrapper)
+        // -----------------------------------------
+        const DB = {
+            name: 'Nexus_AI_DB',
+            version: 1,
+            db: null,
+            init: () => {
+                return new Promise((resolve, reject) => {
+                    const request = indexedDB.open(DB.name, DB.version);
+                    request.onupgradeneeded = (e) => {
+                        const db = e.target.result;
+                        if (!db.objectStoreNames.contains('users')) db.createObjectStore('users', { keyPath: 'id' });
+                        if (!db.objectStoreNames.contains('jobs')) db.createObjectStore('jobs', { keyPath: 'id' });
+                        if (!db.objectStoreNames.contains('applications')) db.createObjectStore('applications', { keyPath: 'id' });
+                        if (!db.objectStoreNames.contains('logs')) db.createObjectStore('logs', { keyPath: 'id' });
+                    };
+                    request.onsuccess = (e) => {
+                        DB.db = e.target.result;
+                        DB.seedInitialData().then(resolve);
+                    };
+                    request.onerror = (e) => reject(e.target.error);
+                });
+            },
+            exec: (storeName, mode, callback) => {
+                return new Promise((resolve, reject) => {
+                    const tx = DB.db.transaction(storeName, mode);
+                    const store = tx.objectStore(storeName);
+                    const req = callback(store);
+                    if(req) {
+                        req.onsuccess = () => resolve(req.result);
+                        req.onerror = () => reject(req.error);
+                    } else {
+                        tx.oncomplete = () => resolve();
+                        tx.onerror = () => reject(tx.error);
+                    }
+                });
+            },
+            put: (store, data) => DB.exec(store, 'readwrite', s => s.put(data)),
+            get: (store, id) => DB.exec(store, 'readonly', s => s.get(id)),
+            getAll: (store) => DB.exec(store, 'readonly', s => s.getAll()),
+            delete: (store, id) => DB.exec(store, 'readwrite', s => s.delete(id)),
+            log: async (event, userId = 'system', confidence = 'N/A') => {
+                await DB.put('logs', { id: Utils.generateId(), timestamp: new Date().toISOString(), event, userId, confidence });
+            },
+            seedInitialData: async () => {
+                const users = await DB.getAll('users');
+                if (users.length === 0) {
+                    // Seed Super Admin
+                    await DB.put('users', {
+                        id: 'admin_1', role: 'admin', name: 'System Admin', email: 'admin@nexus.co.za',
+                        passwordHash: await Utils.hashPassword('admin123')
+                    });
+                    // Seed Demo Employer
+                    await DB.put('users', {
+                        id: 'emp_1', role: 'employer', name: 'TechCorp SA', email: 'emp@nexus.co.za',
+                        passwordHash: await Utils.hashPassword('emp123')
+                    });
+                    // Seed Demo Candidate
+                    await DB.put('users', {
+                        id: 'cand_1', role: 'candidate', name: 'Jane Doe', email: 'cand@nexus.co.za',
+                        passwordHash: await Utils.hashPassword('cand123'),
+                        profile: { 
+                            skills: ['JavaScript', 'HTML', 'CSS', 'React'], province: 'GP', town: 'Pretoria',
+                            license: 'Code 8', education: 'BSc Computer Science', overallScore: 88,
+                            scores: { employability: 90, skills: 85, experience: 80, readiness: 95 }
+                        }
+                    });
+                    // Seed Job
+                    await DB.put('jobs', {
+                        id: 'job_1', employerId: 'emp_1', title: 'Junior Frontend Developer', desc: 'Looking for React dev.',
+                        skills: ['JavaScript', 'React', 'CSS'], loc: 'Pretoria, GP', minScore: 70, date: new Date().toISOString()
+                    });
+                }
+            },
+            exportBackup: async () => {
+                try {
+                    const data = {
+                        users: await DB.getAll('users'),
+                        jobs: await DB.getAll('jobs'),
+                        applications: await DB.getAll('applications'),
+                        logs: await DB.getAll('logs')
+                    };
+                    const blob = new Blob([JSON.stringify(data)], {type: "application/json"});
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url; a.download = `nexus_backup_${new Date().toISOString().split('T')[0]}.json`;
+                    a.click();
+                    Utils.showToast("Database exported successfully", "success");
+                } catch(e) { Utils.showToast("Export failed", "error"); }
+            },
+            importBackup: async (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = async (event) => {
+                    try {
+                        const data = JSON.parse(event.target.result);
+                        for (const key of ['users', 'jobs', 'applications', 'logs']) {
+                            if (data[key]) {
+                                for (const item of data[key]) await DB.put(key, item);
+                            }
+                        }
+                        Utils.showToast("Database restored successfully. Reloading...", "success");
+                        setTimeout(() => window.location.reload(), 1500);
+                    } catch(err) { Utils.showToast("Invalid backup file", "error"); }
+                };
+                reader.readAsText(file);
+            }
+        };
 
-        document.getElementById('registration-form').addEventListener('submit', function(e) {
-            e.preventDefault(); 
+        // -----------------------------------------
+        // 3. AUTHENTICATION SERVICE
+        // -----------------------------------------
+        const Auth = {
+            currentUser: null,
+            login: async (email, password) => {
+                const users = await DB.getAll('users');
+                const hash = await Utils.hashPassword(password);
+                const user = users.find(u => u.email === email && u.passwordHash === hash);
+                
+                if (user) {
+                    Auth.currentUser = user;
+                    sessionStorage.setItem('nexus_session', JSON.stringify(user));
+                    await DB.log('User Login', user.id, '100%');
+                    UI.initDashboard();
+                } else {
+                    Utils.showToast('Invalid credentials or account locked.', 'error');
+                }
+            },
+            register: async (role, name, email, password) => {
+                const users = await DB.getAll('users');
+                if (users.find(u => u.email === email)) return Utils.showToast('Email already in use', 'error');
+                
+                const newUser = {
+                    id: Utils.generateId(), role, name, email,
+                    passwordHash: await Utils.hashPassword(password),
+                    profile: role === 'candidate' ? { scores: {}, skills: [] } : null,
+                    created: new Date().toISOString()
+                };
+                await DB.put('users', newUser);
+                await DB.log('New User Registered', newUser.id, '100%');
+                Utils.showToast('Registration successful! Logging in...', 'success');
+                Auth.login(email, password);
+            },
+            logout: () => {
+                sessionStorage.removeItem('nexus_session');
+                Auth.currentUser = null;
+                UI.showView('view-auth');
+            },
+            checkSession: () => {
+                const sess = sessionStorage.getItem('nexus_session');
+                if (sess) {
+                    Auth.currentUser = JSON.parse(sess);
+                    UI.initDashboard();
+                    return true;
+                }
+                return false;
+            },
+            demoLogin: (email) => {
+                document.getElementById('login-email').value = email;
+                document.getElementById('login-pass').value = email.split('@')[0] + '123'; // hacky match for seeded passwords
+                document.getElementById('form-login').dispatchEvent(new Event('submit'));
+            }
+        };
+
+        // -----------------------------------------
+        // 4. MOCK AI ENGINE (Employment Logic)
+        // -----------------------------------------
+        const AI = {
+            // Simulated CV Parsing (Using PDF.js for text, regex for intelligence)
+            handleCVUpload: async (e) => {
+                const file = e.target.files[0];
+                if (!file || file.type !== "application/pdf") return Utils.showToast("Please upload a PDF.", "error");
+                
+                document.getElementById('cv-upload-title').innerText = "Processing...";
+                document.getElementById('cv-processing').classList.remove('hidden');
+                
+                try {
+                    // 1. PDF Text Extraction
+                    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
+                    const fileBuffer = await file.arrayBuffer();
+                    const pdf = await pdfjsLib.getDocument(fileBuffer).promise;
+                    let text = "";
+                    for (let i = 1; i <= pdf.numPages; i++) {
+                        const page = await pdf.getPage(i);
+                        const content = await page.getTextContent();
+                        text += content.items.map(item => item.str).join(" ") + " ";
+                    }
+                    
+                    // 2. Mock AI Natural Language Processing (Regex based for single file constraint)
+                    await new Promise(r => setTimeout(r, 1500)); // Simulate think time
+                    
+                    const extracted = AI.parseText(text);
+                    
+                    // Populate UI
+                    if(extracted.email) document.getElementById('prof-email').value = extracted.email;
+                    if(extracted.phone) document.getElementById('prof-phone').value = extracted.phone;
+                    if(extracted.skills.length) document.getElementById('prof-skills').value = extracted.skills.join(', ');
+                    if(extracted.education) document.getElementById('prof-edu').value = extracted.education;
+                    
+                    // Generate AI Scores
+                    const scores = AI.generateScores(extracted);
+                    Auth.currentUser.profile = { ...Auth.currentUser.profile, ...extracted, scores, overallScore: scores.employability };
+                    
+                    Utils.showToast("AI Extraction Complete", "success");
+                    await DB.log('CV Parsed via AI', Auth.currentUser.id, '92%');
+                    UI.renderCandidateProfile();
+
+                } catch (err) {
+                    console.error(err);
+                    Utils.showToast("AI parsing failed. Please enter manually.", "error");
+                } finally {
+                    document.getElementById('cv-upload-title').innerText = "Smart CV Upload";
+                    document.getElementById('cv-processing').classList.add('hidden');
+                }
+            },
+
+            parseText: (text) => {
+                const res = { skills: [], education: "", email: "", phone: "" };
+                // Email
+                const em = text.match(/[a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9_-]+/i);
+                if(em) res.email = em[0];
+                // Phone
+                const ph = text.match(/(?:\+27|0)[6-8][0-9\s-]{8,10}/);
+                if(ph) res.phone = ph[0].trim();
+                
+                // Skills Dictionary Matcher
+                const keywords = ["Administration", "Excel", "Customer Service", "IT", "React", "JavaScript", "Management", "Sales", "Accounting", "Data Entry", "Logistics", "Marketing", "Python"];
+                keywords.forEach(kw => {
+                    if (new RegExp("\\b" + kw + "\\b", "i").test(text)) res.skills.push(kw);
+                });
+
+                // Education heuristics
+                if(/degree|BSc|BA|BCom/i.test(text)) res.education = "Bachelor's Degree";
+                else if(/diploma/i.test(text)) res.education = "National Diploma";
+                else if(/matric|grade 12/i.test(text)) res.education = "Matric / Grade 12";
+
+                return res;
+            },
+
+            generateScores: (profile) => {
+                // Pseudo-AI Scoring Algorithm
+                const base = 50;
+                const skillBonus = Math.min((profile.skills?.length || 0) * 5, 25);
+                const eduBonus = profile.education?.includes("Degree") ? 20 : (profile.education?.includes("Diploma") ? 15 : 5);
+                
+                const employability = Math.min(base + skillBonus + eduBonus, 99);
+                return {
+                    employability: employability,
+                    skills: Math.min(40 + skillBonus * 2, 98),
+                    experience: Math.floor(Math.random() * 30) + 60, // Mock
+                    readiness: Math.floor(Math.random() * 20) + 75 // Mock
+                };
+            },
+
+            calculateMatch: (candidateProfile, jobSkillsArray) => {
+                if(!candidateProfile || !candidateProfile.skills || jobSkillsArray.length === 0) return 0;
+                const candSkills = candidateProfile.skills.map(s => s.toLowerCase());
+                let matches = 0;
+                jobSkillsArray.forEach(req => {
+                    if(candSkills.some(s => s.includes(req.toLowerCase()) || req.toLowerCase().includes(s))) matches++;
+                });
+                return Math.min(Math.round((matches / jobSkillsArray.length) * 100) + 15, 100); // +15 AI fuzziness bonus
+            },
+
+            // Built-in Chat Assistant Logic
+            handleQuery: async () => {
+                const input = document.getElementById('ai-chat-input');
+                const query = input.value.trim().toLowerCase();
+                if(!query) return;
+                
+                UI.addChatMessage(query, 'user');
+                input.value = '';
+                
+                // Simulate AI Thinking
+                setTimeout(async () => {
+                    let reply = "I couldn't quite analyze that request. Try 'show jobs' or 'top candidates'.";
+                    
+                    if (query.includes('job') || query.includes('vacanc')) {
+                        const jobs = await DB.getAll('jobs');
+                        reply = `I found ${jobs.length} active vacancies. <br>${jobs.map(j => `• ${j.title} (${j.loc})`).join('<br>')}`;
+                    } 
+                    else if (query.includes('candidate') || query.includes('graduate')) {
+                        const users = await DB.getAll('users');
+                        const cands = users.filter(u => u.role === 'candidate');
+                        reply = `There are ${cands.length} candidates registered. Top profiles:<br>${cands.slice(0,3).map(c => `• ${c.name} (Score: ${c.profile?.overallScore || 'N/A'})`).join('<br>')}`;
+                    }
+                    else if (query.includes('unemployed')) {
+                        reply = "Filtering by 'Unemployed' status. 65% of our database matches this criteria currently. Go to Universal Search to view the list.";
+                    }
+
+                    UI.addChatMessage(reply, 'ai');
+                    await DB.log('AI Chat Query', Auth.currentUser?.id, '85%');
+                }, 800);
+            },
+
+            performUniversalSearch: async () => {
+                const query = document.getElementById('search-query').value.toLowerCase();
+                const minScore = parseInt(document.getElementById('search-score').value) || 0;
+                const container = document.getElementById('search-results-container');
+                container.innerHTML = '<div class="col-span-full text-center py-8"><i class="fa-solid fa-circle-notch fa-spin text-3xl text-brand-blue"></i><p class="mt-2 text-gray-500">AI semantic search running...</p></div>';
+
+                const users = await DB.getAll('users');
+                const candidates = users.filter(u => u.role === 'candidate');
+                
+                // NLP Mock Filter
+                const results = candidates.filter(c => {
+                    const profStr = JSON.stringify(c.profile || {}).toLowerCase() + ' ' + c.name.toLowerCase();
+                    const matchQuery = query === '' || query.split(' ').some(word => word.length > 2 && profStr.includes(word));
+                    const matchScore = (c.profile?.overallScore || 0) >= minScore;
+                    return matchQuery && matchScore;
+                });
+
+                setTimeout(() => {
+                    if (results.length === 0) {
+                        container.innerHTML = '<div class="col-span-full text-center py-8 text-gray-500">No matching profiles found in intelligence hub.</div>';
+                        return;
+                    }
+                    container.innerHTML = results.map(c => `
+                        <div class="glass-panel p-4 rounded-xl border-t-4 border-t-brand-blue hover:-translate-y-1 transition-transform cursor-pointer" onclick="UI.showCandidate('${c.id}')">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <h4 class="font-bold text-gray-800 dark:text-white">${c.name}</h4>
+                                    <p class="text-xs text-gray-500">${c.profile?.town || 'Location unknown'} • ${c.profile?.education || 'No Edu Listed'}</p>
+                                </div>
+                                <span class="bg-blue-100 text-brand-blue px-2 py-1 rounded-full text-xs font-bold">${c.profile?.overallScore || 0}</span>
+                            </div>
+                            <div class="mt-3 flex flex-wrap gap-1">
+                                ${(c.profile?.skills || []).slice(0,3).map(s => `<span class="text-[10px] bg-gray-200 dark:bg-gray-700 px-2 py-1 rounded">${s}</span>`).join('')}
+                            </div>
+                        </div>
+                    `).join('');
+                }, 600);
+            }
+        };
+
+        // -----------------------------------------
+        // 5. UI CONTROLLER
+        // -----------------------------------------
+        const UI = {
+            init: () => {
+                // Event Listeners
+                document.getElementById('form-login').addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    Auth.login(document.getElementById('login-email').value, document.getElementById('login-pass').value);
+                });
+                document.getElementById('form-register').addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    Auth.register(
+                        document.getElementById('reg-role').value,
+                        document.getElementById('reg-name').value,
+                        document.getElementById('reg-email').value,
+                        document.getElementById('reg-pass').value
+                    );
+                });
+                document.getElementById('form-post-job').addEventListener('submit', UI.handlePostJob);
+
+                // Initial Check
+                if (!Auth.checkSession()) UI.showView('view-auth');
+            },
+
+            showView: (viewId) => {
+                ['view-auth', 'view-dashboard'].forEach(id => document.getElementById(id).classList.add('hidden-view'));
+                document.getElementById(viewId).classList.remove('hidden-view');
+            },
+
+            showPanel: (panelId) => {
+                ['panel-admin', 'panel-candidate', 'panel-employer', 'panel-search'].forEach(id => {
+                    const el = document.getElementById(id);
+                    if(el) el.classList.add('hidden-view');
+                });
+                document.getElementById(panelId).classList.remove('hidden-view');
+                if(window.innerWidth < 768) document.getElementById('mobile-menu').classList.add('hidden'); // hide sidebar on mobile select
+            },
+
+            toggleAuth: () => {
+                const loginForm = document.getElementById('form-login');
+                const regForm = document.getElementById('form-register');
+                const isLogin = !loginForm.classList.contains('hidden-view');
+                
+                if (isLogin) {
+                    loginForm.classList.add('hidden-view');
+                    regForm.classList.remove('hidden-view');
+                    document.getElementById('auth-switch-text').innerText = "Already have an account?";
+                    document.getElementById('btn-auth-switch').innerText = "Sign In";
+                } else {
+                    regForm.classList.add('hidden-view');
+                    loginForm.classList.remove('hidden-view');
+                    document.getElementById('auth-switch-text').innerText = "Don't have an account?";
+                    document.getElementById('btn-auth-switch').innerText = "Register";
+                }
+            },
+
+            setRegRole: (role) => {
+                document.getElementById('reg-role').value = role;
+                const cBtn = document.getElementById('btn-reg-cand');
+                const eBtn = document.getElementById('btn-reg-emp');
+                if (role === 'candidate') {
+                    cBtn.className = "py-2 border-2 border-brand-blue bg-blue-50 text-brand-blue rounded-lg font-semibold text-sm transition-colors dark:bg-blue-900/30";
+                    eBtn.className = "py-2 border-2 border-transparent bg-gray-100 text-gray-500 rounded-lg font-semibold text-sm hover:bg-gray-200 transition-colors dark:bg-gray-800 dark:text-gray-400";
+                } else {
+                    eBtn.className = "py-2 border-2 border-brand-blue bg-blue-50 text-brand-blue rounded-lg font-semibold text-sm transition-colors dark:bg-blue-900/30";
+                    cBtn.className = "py-2 border-2 border-transparent bg-gray-100 text-gray-500 rounded-lg font-semibold text-sm hover:bg-gray-200 transition-colors dark:bg-gray-800 dark:text-gray-400";
+                }
+            },
+
+            toggleTheme: () => {
+                document.documentElement.classList.toggle('dark');
+            },
+
+            toggleChat: () => {
+                const panel = document.getElementById('ai-chat-panel');
+                panel.classList.toggle('hidden');
+            },
+
+            addChatMessage: (msg, sender) => {
+                const box = document.getElementById('ai-chat-messages');
+                const div = document.createElement('div');
+                if (sender === 'user') {
+                    div.className = "bg-brand-blue text-white p-3 rounded-lg rounded-tr-none self-end max-w-[85%] shadow-sm";
+                    div.innerHTML = Utils.escapeHtml(msg);
+                } else {
+                    div.className = "bg-gray-100 dark:bg-gray-800 p-3 rounded-lg rounded-tl-none self-start max-w-[85%] text-gray-800 dark:text-gray-200 shadow-sm";
+                    div.innerHTML = msg; // AI returns basic HTML
+                }
+                box.appendChild(div);
+                box.scrollTop = box.scrollHeight;
+            },
+
+            initDashboard: () => {
+                UI.showView('view-dashboard');
+                const user = Auth.currentUser;
+                
+                // Setup Sidebar
+                document.getElementById('nav-name').innerText = user.name;
+                document.getElementById('nav-avatar').innerText = user.name.charAt(0);
+                document.getElementById('nav-role').innerText = user.role.toUpperCase();
+                
+                const navLinks = document.getElementById('nav-links');
+                navLinks.innerHTML = '';
+                
+                // Role routing & rendering
+                if (user.role === 'admin') {
+                    navLinks.innerHTML += `<button onclick="UI.showPanel('panel-admin')" class="w-full text-left px-4 py-3 rounded-lg font-medium text-brand-blue bg-blue-50 dark:bg-blue-900/20"><i class="fa-solid fa-chart-pie w-6"></i> Analytics</button>`;
+                    navLinks.innerHTML += `<button onclick="UI.showPanel('panel-search')" class="w-full text-left px-4 py-3 rounded-lg font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"><i class="fa-solid fa-search w-6"></i> AI Search</button>`;
+                    UI.showPanel('panel-admin');
+                    UI.renderAdminDashboard();
+                } 
+                else if (user.role === 'employer') {
+                    navLinks.innerHTML += `<button onclick="UI.showPanel('panel-employer')" class="w-full text-left px-4 py-3 rounded-lg font-medium text-brand-blue bg-blue-50 dark:bg-blue-900/20"><i class="fa-solid fa-briefcase w-6"></i> My Vacancies</button>`;
+                    navLinks.innerHTML += `<button onclick="UI.showPanel('panel-search')" class="w-full text-left px-4 py-3 rounded-lg font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"><i class="fa-solid fa-search w-6"></i> Discover Talent</button>`;
+                    UI.showPanel('panel-employer');
+                    UI.renderEmployerDashboard();
+                }
+                else if (user.role === 'candidate') {
+                    navLinks.innerHTML += `<button onclick="UI.showPanel('panel-candidate')" class="w-full text-left px-4 py-3 rounded-lg font-medium text-brand-blue bg-blue-50 dark:bg-blue-900/20"><i class="fa-solid fa-user-tie w-6"></i> My Profile</button>`;
+                    UI.showPanel('panel-candidate');
+                    UI.renderCandidateProfile();
+                }
+
+                // Show floating button
+                document.getElementById('ai-chat-btn').classList.remove('hidden');
+            },
+
+            // --- Candidate Specific ---
+            renderCandidateProfile: async () => {
+                const p = Auth.currentUser.profile || {};
+                
+                // Form Fields
+                document.getElementById('prof-name').value = Auth.currentUser.name || '';
+                document.getElementById('prof-id').value = p.idNum || '';
+                document.getElementById('prof-email').value = Auth.currentUser.email || '';
+                document.getElementById('prof-phone').value = p.phone || '';
+                document.getElementById('prof-province').value = p.province || '';
+                document.getElementById('prof-town').value = p.town || '';
+                document.getElementById('prof-license').value = p.license || 'None';
+                document.getElementById('prof-skills').value = (p.skills || []).join(', ');
+                document.getElementById('prof-edu').value = p.education || '';
+                
+                document.getElementById('cand-overall-score').innerText = `AI Score: ${p.overallScore || 'N/A'}`;
+
+                // Score Cards
+                const s = p.scores || {};
+                const scHtml = [
+                    { t: 'Employability', v: s.employability || 0, c: 'text-brand-blue' },
+                    { t: 'Skill Match', v: s.skills || 0, c: 'text-brand-green' },
+                    { t: 'Experience Depth', v: s.experience || 0, c: 'text-brand-yellow' },
+                    { t: 'Interview Ready', v: s.readiness || 0, c: 'text-purple-500' }
+                ].map(item => `
+                    <div class="glass-panel p-4 rounded-xl text-center">
+                        <div class="text-xs text-gray-500 font-semibold uppercase">${item.t}</div>
+                        <div class="text-3xl font-bold mt-1 ${item.c}">${item.v}%</div>
+                    </div>
+                `).join('');
+                document.getElementById('cand-scores-container').innerHTML = scHtml;
+
+                // Recommended Jobs
+                const jobs = await DB.getAll('jobs');
+                const apps = await DB.getAll('applications');
+                const myApps = apps.filter(a => a.candidateId === Auth.currentUser.id);
+                
+                let recHtml = '';
+                for (let job of jobs) {
+                    const match = AI.calculateMatch(p, job.skills);
+                    if (match > 30) {
+                        const hasApplied = myApps.find(a => a.vacancyId === job.id);
+                        recHtml += `
+                            <div class="glass-panel p-4 rounded-xl flex flex-col md:flex-row justify-between items-center gap-4">
+                                <div>
+                                    <h4 class="font-bold text-gray-800 dark:text-white text-lg">${job.title} <span class="text-sm font-normal text-gray-500">• ${job.loc}</span></h4>
+                                    <p class="text-sm text-gray-600 dark:text-gray-400 line-clamp-1">${job.desc}</p>
+                                    <div class="mt-2 flex gap-2 text-xs font-semibold">
+                                        <span class="bg-green-100 text-brand-green px-2 py-1 rounded">Match: ${match}%</span>
+                                    </div>
+                                </div>
+                                <div class="shrink-0 w-full md:w-auto">
+                                    ${hasApplied 
+                                        ? `<span class="px-4 py-2 bg-gray-200 text-gray-600 rounded-lg font-bold block text-center w-full">Applied (${hasApplied.status})</span>`
+                                        : `<button onclick="UI.applyForJob('${job.id}')" class="w-full bg-brand-blue text-white px-6 py-2 rounded-lg font-bold hover:bg-blue-600 transition-colors">1-Click Apply</button>`}
+                                </div>
+                            </div>
+                        `;
+                    }
+                }
+                document.getElementById('cand-recommended-jobs').innerHTML = recHtml || '<p class="text-gray-500">No AI recommendations yet. Update your profile to get matches.</p>';
+            },
+
+            saveCandidateProfile: async () => {
+                const user = Auth.currentUser;
+                const skInput = document.getElementById('prof-skills').value;
+                const skillsArr = skInput.split(',').map(s => s.trim()).filter(s => s);
+                
+                const profileData = {
+                    idNum: document.getElementById('prof-id').value,
+                    phone: document.getElementById('prof-phone').value,
+                    province: document.getElementById('prof-province').value,
+                    town: document.getElementById('prof-town').value,
+                    license: document.getElementById('prof-license').value,
+                    skills: skillsArr,
+                    education: document.getElementById('prof-edu').value,
+                };
+                
+                // Recalculate scores based on manual edit
+                profileData.scores = AI.generateScores(profileData);
+                profileData.overallScore = profileData.scores.employability;
+                
+                user.name = document.getElementById('prof-name').value;
+                user.email = document.getElementById('prof-email').value;
+                user.profile = profileData;
+
+                await DB.put('users', user);
+                sessionStorage.setItem('nexus_session', JSON.stringify(user));
+                Utils.showToast("Profile manually updated successfully.", "success");
+                UI.renderCandidateProfile();
+            },
+
+            applyForJob: async (jobId) => {
+                const appId = Utils.generateId();
+                await DB.put('applications', {
+                    id: appId, vacancyId: jobId, candidateId: Auth.currentUser.id, status: 'Registered', date: new Date().toISOString()
+                });
+                Utils.showToast("Application submitted successfully!", "success");
+                UI.renderCandidateProfile();
+            },
+
+            // --- Employer Specific ---
+            renderEmployerDashboard: async () => {
+                const jobs = await DB.getAll('jobs');
+                const myJobs = jobs.filter(j => j.employerId === Auth.currentUser.id);
+                
+                const list = document.getElementById('emp-vacancies-list');
+                list.innerHTML = myJobs.map(j => `
+                    <div class="glass-panel p-4 rounded-xl border-l-4 border-l-brand-blue cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800 transition" onclick="UI.loadJobPipeline('${j.id}', '${Utils.escapeHtml(j.title)}')">
+                        <h4 class="font-bold text-gray-800 dark:text-white">${j.title}</h4>
+                        <p class="text-xs text-gray-500 mb-2">${j.loc} • Min Score: ${j.minScore}</p>
+                        <div class="flex gap-1 overflow-hidden">
+                            ${(j.skills || []).slice(0,3).map(s => `<span class="text-[10px] bg-gray-200 dark:bg-gray-700 px-1.5 py-0.5 rounded">${s}</span>`).join('')}
+                        </div>
+                    </div>
+                `).join('') || '<p class="text-sm text-gray-500">No active vacancies. Post one to start tracking.</p>';
+                
+                document.getElementById('emp-applicants-body').innerHTML = '<tr><td colspan="5" class="text-center py-8 text-gray-500">Select a vacancy on the left to view applicants.</td></tr>';
+            },
+
+            handlePostJob: async (e) => {
+                e.preventDefault();
+                const skillsStr = document.getElementById('job-skills').value;
+                const newJob = {
+                    id: Utils.generateId(),
+                    employerId: Auth.currentUser.id,
+                    title: document.getElementById('job-title').value,
+                    desc: document.getElementById('job-desc').value,
+                    skills: skillsStr.split(',').map(s=>s.trim()).filter(s=>s),
+                    loc: document.getElementById('job-loc').value,
+                    minScore: parseInt(document.getElementById('job-min-score').value) || 0,
+                    date: new Date().toISOString()
+                };
+                await DB.put('jobs', newJob);
+                Utils.showToast("Vacancy posted successfully", "success");
+                UI.hideModal();
+                UI.renderEmployerDashboard();
+                document.getElementById('form-post-job').reset();
+            },
+
+            currentJobPipelineId: null,
+            loadJobPipeline: async (jobId, jobTitle) => {
+                UI.currentJobPipelineId = jobId;
+                document.getElementById('pipeline-title').innerText = `Pipeline: ${jobTitle}`;
+                UI.filterApplicants();
+            },
+
+            filterApplicants: async () => {
+                if(!UI.currentJobPipelineId) return;
+                const jobId = UI.currentJobPipelineId;
+                const q = document.getElementById('emp-search-cand').value.toLowerCase();
+                
+                const job = await DB.get('jobs', jobId);
+                const apps = await DB.getAll('applications');
+                const jobApps = apps.filter(a => a.vacancyId === jobId);
+                
+                const tbody = document.getElementById('emp-applicants-body');
+                if(jobApps.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="5" class="text-center py-8 text-gray-500">No applicants yet for this vacancy.</td></tr>';
+                    return;
+                }
+
+                let html = '';
+                for (let app of jobApps) {
+                    const cand = await DB.get('users', app.candidateId);
+                    if (!cand) continue;
+                    
+                    const match = AI.calculateMatch(cand.profile, job.skills);
+                    const profStr = JSON.stringify(cand.profile || {}).toLowerCase() + cand.name.toLowerCase();
+                    if (q && !profStr.includes(q)) continue; // search filter
+
+                    // Status Colors
+                    const stColors = { 'Registered':'bg-gray-100 text-gray-700', 'Under Review':'bg-yellow-100 text-yellow-800', 'Shortlisted':'bg-blue-100 text-blue-800', 'Interview Scheduled':'bg-purple-100 text-purple-800', 'Hired':'bg-green-100 text-green-800', 'Rejected':'bg-red-100 text-red-800' };
+                    const sc = stColors[app.status] || stColors['Registered'];
+
+                    html += `
+                        <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition">
+                            <td class="px-4 py-3"><span class="font-bold text-brand-blue">${match}%</span></td>
+                            <td class="px-4 py-3 cursor-pointer" onclick="UI.showCandidate('${cand.id}')">
+                                <div class="font-semibold text-gray-800 dark:text-gray-200 hover:text-brand-blue hover:underline">${cand.name}</div>
+                                <div class="text-xs text-gray-500">${cand.email}</div>
+                            </td>
+                            <td class="px-4 py-3 text-xs text-gray-600 dark:text-gray-400">${cand.profile?.town || 'N/A'}</td>
+                            <td class="px-4 py-3">
+                                <select class="text-xs font-semibold rounded-full px-2 py-1 border-0 focus:ring-0 cursor-pointer ${sc}" onchange="UI.updateAppStatus('${app.id}', this.value)">
+                                    ${Object.keys(stColors).map(s => `<option value="${s}" ${app.status===s?'selected':''}>${s}</option>`).join('')}
+                                </select>
+                            </td>
+                            <td class="px-4 py-3">
+                                <div class="flex gap-2">
+                                    <a href="https://wa.me/${(cand.profile?.phone||'').replace(/[^0-9]/g,'')}?text=Hi ${cand.name}, regarding your application for ${job.title}..." target="_blank" class="text-green-500 hover:scale-110 transition" title="WhatsApp"><i class="fa-brands fa-whatsapp text-lg"></i></a>
+                                    <a href="mailto:${cand.email}" class="text-brand-blue hover:scale-110 transition" title="Email"><i class="fa-regular fa-envelope text-lg"></i></a>
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+                }
+                tbody.innerHTML = html || '<tr><td colspan="5" class="text-center py-8 text-gray-500">No applicants match your search.</td></tr>';
+            },
+
+            updateAppStatus: async (appId, newStatus) => {
+                const app = await DB.get('applications', appId);
+                if(app) {
+                    app.status = newStatus;
+                    await DB.put('applications', app);
+                    Utils.showToast("Status updated", "success");
+                    // DB.log implied logic for brevity
+                }
+            },
+
+            showCandidate: async (candId) => {
+                const cand = await DB.get('users', candId);
+                if(!cand) return;
+                const p = cand.profile || {};
+                
+                const html = `
+                    <div class="flex justify-between items-start mb-6">
+                        <div>
+                            <h3 class="text-2xl font-display font-bold text-gray-900 dark:text-white">${cand.name}</h3>
+                            <p class="text-brand-blue font-semibold">${p.education || 'Profile'}</p>
+                        </div>
+                        <button onclick="UI.hideModal()" class="text-gray-500 hover:text-gray-800 dark:hover:text-white"><i class="fa-solid fa-times text-xl"></i></button>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="space-y-4">
+                            <div><span class="text-xs text-gray-500 uppercase font-bold block">Contact</span><p class="text-sm"><i class="fa-solid fa-envelope mr-1 text-gray-400"></i> ${cand.email}<br><i class="fa-solid fa-phone mr-1 text-gray-400"></i> ${p.phone || 'N/A'}</p></div>
+                            <div><span class="text-xs text-gray-500 uppercase font-bold block">Location</span><p class="text-sm">${p.town || 'N/A'}, ${p.province || 'N/A'}</p></div>
+                            <div><span class="text-xs text-gray-500 uppercase font-bold block">License</span><p class="text-sm bg-gray-100 dark:bg-gray-800 inline-block px-2 py-1 rounded text-xs font-bold mt-1">${p.license || 'None'}</p></div>
+                        </div>
+                        <div class="space-y-4">
+                            <div><span class="text-xs text-gray-500 uppercase font-bold block mb-1">AI Scores</span>
+                                <div class="flex flex-wrap gap-2">
+                                    <span class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full font-bold">Overall: ${p.overallScore||0}</span>
+                                    <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full font-bold">Skills: ${p.scores?.skills||0}</span>
+                                    <span class="bg-purple-100 text-purple-800 text-xs px-2 py-1 rounded-full font-bold">Readiness: ${p.scores?.readiness||0}</span>
+                                </div>
+                            </div>
+                            <div><span class="text-xs text-gray-500 uppercase font-bold block mb-1">Skills Detected</span>
+                                <div class="flex flex-wrap gap-1">
+                                    ${(p.skills||[]).map(s => `<span class="bg-gray-200 dark:bg-gray-700 text-xs px-2 py-1 rounded">${s}</span>`).join('')}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-6 flex gap-2">
+                        <a href="https://wa.me/${(p.phone||'').replace(/[^0-9]/g,'')}" target="_blank" class="flex-1 text-center bg-green-500 hover:bg-green-600 text-white py-2 rounded-lg font-bold transition"><i class="fa-brands fa-whatsapp mr-1"></i> WhatsApp</a>
+                        <button class="flex-1 bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-gray-200 py-2 rounded-lg font-bold hover:bg-gray-300 dark:hover:bg-gray-600 transition"><i class="fa-solid fa-download mr-1"></i> Download Profile</button>
+                    </div>
+                `;
+                
+                const modal = document.getElementById('modal-cand-preview');
+                modal.innerHTML = html;
+                UI.showModal('modal-cand-preview');
+            },
+
+            // --- Admin Specific ---
+            renderAdminDashboard: async () => {
+                const users = await DB.getAll('users');
+                const jobs = await DB.getAll('jobs');
+                const logs = await DB.getAll('logs');
+                
+                document.getElementById('kpi-candidates').innerText = users.filter(u=>u.role==='candidate').length;
+                document.getElementById('kpi-employers').innerText = users.filter(u=>u.role==='employer').length;
+                document.getElementById('kpi-jobs').innerText = jobs.length;
+                
+                // Logs
+                document.getElementById('admin-logs-body').innerHTML = [...logs].reverse().slice(0, 5).map(l => `
+                    <tr class="bg-white border-b dark:bg-gray-800/50 dark:border-gray-700">
+                        <td class="px-4 py-2">${Utils.formatDate(l.timestamp)}</td>
+                        <td class="px-4 py-2 font-medium">${l.event}</td>
+                        <td class="px-4 py-2 text-xs text-gray-400">${l.userId.substring(0,8)}...</td>
+                        <td class="px-4 py-2"><span class="bg-green-100 text-green-800 text-xs font-semibold px-2 py-0.5 rounded">${l.confidence}</span></td>
+                    </tr>
+                `).join('');
+
+                // Render Charts (Destroy old instances if exist)
+                if(window.chartStatusIns) window.chartStatusIns.destroy();
+                if(window.chartSkillsIns) window.chartSkillsIns.destroy();
+
+                const ctxStatus = document.getElementById('chart-status').getContext('2d');
+                window.chartStatusIns = new Chart(ctxStatus, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Unemployed Graduates', 'Experienced Seeking', 'Employed Exploring', 'Youth / Entry Level'],
+                        datasets: [{ data: [45, 25, 15, 15], backgroundColor: ['#4285F4', '#34A853', '#FBBC05', '#EA4335'], borderWidth: 0 }]
+                    },
+                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right' } }, cutout: '70%' }
+                });
+
+                const ctxSkills = document.getElementById('chart-skills').getContext('2d');
+                window.chartSkillsIns = new Chart(ctxSkills, {
+                    type: 'bar',
+                    data: {
+                        labels: ['JavaScript', 'Admin', 'Excel', 'Customer Service', 'Management'],
+                        datasets: [{ label: 'Occurrences', data: [80, 120, 150, 110, 60], backgroundColor: '#4285F4', borderRadius: 6 }]
+                    },
+                    options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true } } }
+                });
+            },
+
+            // Modal Handlers
+            showModal: (id) => {
+                const bd = document.getElementById('modal-backdrop');
+                const modal = document.getElementById(id);
+                bd.classList.remove('hidden');
+                modal.classList.remove('hidden');
+                setTimeout(() => { bd.classList.remove('opacity-0'); modal.classList.remove('scale-95'); }, 10);
+            },
+            hideModal: () => {
+                const bd = document.getElementById('modal-backdrop');
+                const modals = document.querySelectorAll('.modal-content');
+                bd.classList.add('opacity-0');
+                modals.forEach(m => m.classList.add('scale-95'));
+                setTimeout(() => { bd.classList.add('hidden'); modals.forEach(m => m.classList.add('hidden')); }, 300);
+            }
+        };
+
+        // -----------------------------------------
+        // 6. INITIALIZATION & PWA SETUP
+        // -----------------------------------------
+        window.addEventListener('DOMContentLoaded', async () => {
+            // Initialize Database
+            await DB.init();
             
-            const newCandidate = {
-                id: Date.now(),
-                name: document.getElementById('c-name').value,
-                surname: document.getElementById('c-surname').value,
-                gender: document.getElementById('c-gender').value,
-                phone: document.getElementById('c-phone').value,
-                whatsapp: document.getElementById('c-whatsapp').value,
-                email: document.getElementById('c-email').value,
-                address: document.getElementById('c-address').value,
-                province: document.getElementById('c-province').value,
-                education: document.getElementById('c-education').value,
-                qualifications: document.getElementById('c-qualifications').value,
-                skills: document.getElementById('c-skills').value,
-                languages: document.getElementById('c-languages').value,
-                certs: document.getElementById('c-certs').value,
-                license: document.getElementById('c-license').value,
-                status: document.getElementById('c-status').value,
-                category: document.getElementById('c-category').value,
-                experience: document.getElementById('c-experience').value,
-                references: document.getElementById('c-references').value,
-                notes: document.getElementById('c-notes').value,
-                dateAdded: new Date().toLocaleDateString()
-            };
-            
-            candidates.push(newCandidate);
-            saveData();
-            
-            this.reset();
-            alert('CV successfully saved!');
-            navigate('candidates');
+            // Initialize UI
+            UI.init();
+
+            // PWA Service Worker (Inline generation for single-file constraint)
+            if ('serviceWorker' in navigator) {
+                const swCode = `
+                    const CACHE = 'nexus-ai-cache-v1';
+                    self.addEventListener('install', e => e.waitUntil(caches.open(CACHE).then(c => c.addAll(['/']))));
+                    self.addEventListener('fetch', e => e.respondWith(caches.match(e.request).then(res => res || fetch(e.request))));
+                `;
+                const blob = new Blob([swCode], {type: 'application/javascript'});
+                navigator.serviceWorker.register(URL.createObjectURL(blob)).catch(console.error);
+            }
         });
 
-        function saveData() {
-            localStorage.setItem('sisonke_google_db', JSON.stringify(candidates));
-        }
-
-        function updateDashboard() {
-            document.getElementById('stat-total').innerText = candidates.length;
-        }
-
-        function renderTable(dataToRender = candidates) {
-            const tbody = document.getElementById('candidate-tbody');
-            tbody.innerHTML = ''; 
-            
-            dataToRender.forEach(c => {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td>${c.name}</td>
-                    <td>${c.surname}</td>
-                    <td>${c.phone}</td>
-                    <td>${c.qualifications || 'N/A'}</td>
-                    <td>${c.skills || 'N/A'}</td>
-                    <td>${c.category}</td>
-                    <td>
-                        <button class="btn-danger" style="width:100%" onclick="deleteCandidate(${c.id})">Delete</button>
-                    </td>
-                `;
-                tbody.appendChild(tr);
-            });
-        }
-
-        function filterTable() {
-            const query = document.getElementById('search-input').value.toLowerCase();
-            
-            const filtered = candidates.filter(c => 
-                c.name.toLowerCase().includes(query) || 
-                c.surname.toLowerCase().includes(query) ||
-                c.category.toLowerCase().includes(query) ||
-                c.skills.toLowerCase().includes(query) || 
-                c.qualifications.toLowerCase().includes(query)
-            );
-            
-            renderTable(filtered);
-        }
-
-        function deleteCandidate(id) {
-            if(confirm('Delete this CV? This action cannot be undone.')) {
-                candidates = candidates.filter(c => c.id !== id);
-                saveData();
-                renderTable();
-                updateDashboard();
-            }
-        }
-
-        function exportCSV() {
-            if (candidates.length === 0) {
-                alert("No data to export!");
-                return;
-            }
-            
-            let csvContent = "data:text/csv;charset=utf-8,";
-            csvContent += "Name,Surname,Phone,Qualifications,Skills,Category,Date Added\n";
-            
-            candidates.forEach(c => {
-                let row = `${c.name},${c.surname},${c.phone},"${c.qualifications}","${c.skills}",${c.category},${c.dateAdded}`;
-                csvContent += row + "\n";
-            });
-            
-            const encodedUri = encodeURI(csvContent);
-            const link = document.createElement("a");
-            link.setAttribute("href", encodedUri);
-            link.setAttribute("download", "sisonke_cv_database.csv");
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        }
-
-        // Initialize App
-        updateDashboard();
-        renderTable();
     </script>
 </body>
 </html>
