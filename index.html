@@ -3,129 +3,64 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nexus | Admin Secure Portal</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Enterprise AI CV Scanner</title>
+    <style>
+        :root { --navy: #0a192f; --royal: #2962ff; --green: #00c853; --light: #f4f7f6; }
+        body { font-family: -apple-system, sans-serif; background: var(--light); margin: 0; }
+        nav { background: var(--navy); color: white; padding: 1rem; display: flex; gap: 1rem; }
+        main { padding: 20px; }
+        .card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        .drop-zone { border: 2px dashed var(--royal); padding: 40px; text-align: center; border-radius: 12px; cursor: pointer; }
+    </style>
 </head>
-<body class="bg-gray-100 h-screen flex items-center justify-center">
+<body>
 
-    <!-- Auth Container -->
-    <div id="view-auth" class="bg-white p-8 rounded-xl shadow-2xl w-full max-w-md">
-        <h2 id="auth-title" class="text-2xl font-bold text-center mb-6">Admin Login</h2>
-        <form id="auth-form" class="space-y-4">
-            <input type="text" id="in-name" placeholder="Full Name (Register Only)" class="w-full px-4 py-2 border rounded-lg hidden">
-            <input type="email" id="in-email" placeholder="Email Address" class="w-full px-4 py-2 border rounded-lg" required>
-            <input type="password" id="in-pass" placeholder="Password" class="w-full px-4 py-2 border rounded-lg" required>
-            <button type="submit" id="main-btn" class="w-full bg-blue-600 text-white py-2 rounded-lg font-bold">Login</button>
-        </form>
-        <button onclick="UI.toggleMode()" id="toggle-btn" class="w-full mt-4 text-sm text-blue-600 hover:underline">Need to Create Admin Account?</button>
-    </div>
+<nav>
+    <button onclick="show('dashboard')">Dashboard</button>
+    <button onclick="show('upload')">Upload PDF CV</button>
+</nav>
 
-    <!-- Dashboard Container -->
-    <div id="view-dashboard" class="hidden w-full h-full p-8">
-        <h1 class="text-3xl font-bold mb-4">Nexus Admin Dashboard</h1>
-        <div class="bg-white p-6 rounded-lg shadow-sm border">
-            <p>Welcome, Administrator. System Operational.</p>
-            <button onclick="Auth.logout()" class="mt-4 bg-red-600 text-white px-4 py-2 rounded">Logout</button>
+<main>
+    <section id="upload">
+        <div class="card">
+            <h2>Select PDF CV</h2>
+            <div class="drop-zone" onclick="document.getElementById('fileInput').click()">
+                Click to upload PDF
+                <input type="file" id="fileInput" accept="application/pdf" style="display:none" onchange="handleFile(this.files)">
+            </div>
         </div>
-    </div>
+    </section>
+</main>
 
-    <script>
-        // -----------------------------------------
-        // 1. DATABASE LAYER
-        // -----------------------------------------
-        const DB = {
-            db: null,
-            init: () => {
-                return new Promise((resolve) => {
-                    const req = indexedDB.open('Nexus_Admin_DB', 1);
-                    req.onupgradeneeded = e => e.target.result.createObjectStore('users', { keyPath: 'id' });
-                    req.onsuccess = e => { DB.db = e.target.result; resolve(); };
-                });
-            },
-            async getAll(store) {
-                return new Promise(res => {
-                    const tx = DB.db.transaction(store, 'readonly');
-                    const req = tx.objectStore(store).getAll();
-                    req.onsuccess = () => res(req.result);
-                });
-            },
-            async put(store, data) {
-                return new Promise(res => {
-                    const tx = DB.db.transaction(store, 'readwrite');
-                    tx.objectStore(store).put(data);
-                    tx.oncomplete = () => res();
-                });
-            }
+<script>
+    // 1. Database Setup
+    let db;
+    const request = indexedDB.open("CVScannerDB", 1);
+    request.onupgradeneeded = e => e.target.result.createObjectStore("candidates", {keyPath: "id", autoIncrement: true});
+    request.onsuccess = e => db = e.target.result;
+
+    // 2. File Handling
+    function handleFile(files) {
+        const file = files[0];
+        if (!file || file.type !== "application/pdf") {
+            return alert("Please upload a valid PDF file.");
+        }
+
+        const reader = new FileReader();
+        reader.onload = function() {
+            // NOTE: To extract text from PDF entirely offline without a server,
+            // you must embed the PDF.js library source code here.
+            // For now, this is set up to capture the file binary.
+            const typedarray = new Uint8Array(this.result);
+            processPDFBinary(typedarray);
         };
+        reader.readAsArrayBuffer(file);
+    }
 
-        // -----------------------------------------
-        // 2. AUTHENTICATION LAYER
-        // -----------------------------------------
-        const Auth = {
-            async hash(str) {
-                const msg = new TextEncoder().encode(str);
-                const hash = await crypto.subtle.digest('SHA-256', msg);
-                return Array.from(new Uint8Array(hash)).map(b => b.toString(16).padStart(2, '0')).join('');
-            },
-            async register(name, email, pass) {
-                const users = await DB.getAll('users');
-                if (users.filter(u => u.role === 'admin').length >= 3) return alert('Error: Max 3 Admins reached.');
-                if (users.find(u => u.email === email)) return alert('Error: User already exists.');
-                
-                await DB.put('users', {
-                    id: Date.now().toString(),
-                    name, email,
-                    role: 'admin',
-                    password: await Auth.hash(pass)
-                });
-                alert('Admin Created! You can now login.');
-                UI.toggleMode(); // Switch back to login
-            },
-            async login(email, pass) {
-                const users = await DB.getAll('users');
-                const user = users.find(u => u.email === email && u.password === await Auth.hash(pass));
-                if (user && user.role === 'admin') {
-                    document.getElementById('view-auth').classList.add('hidden');
-                    document.getElementById('view-dashboard').classList.remove('hidden');
-                } else {
-                    alert('Invalid Login or Unauthorized.');
-                }
-            },
-            logout: () => location.reload()
-        };
-
-        // -----------------------------------------
-        // 3. UI LAYER
-        // -----------------------------------------
-        const UI = {
-            isRegistering: false,
-            toggleMode: () => {
-                UI.isRegistering = !UI.isRegistering;
-                document.getElementById('auth-title').innerText = UI.isRegistering ? 'Create Admin' : 'Admin Login';
-                document.getElementById('main-btn').innerText = UI.isRegistering ? 'Register' : 'Login';
-                document.getElementById('toggle-btn').innerText = UI.isRegistering ? 'Back to Login' : 'Need to Create Admin Account?';
-                document.getElementById('in-name').classList.toggle('hidden', !UI.isRegistering);
-            }
-        };
-
-        // -----------------------------------------
-        // 4. BOOTSTRAP
-        // -----------------------------------------
-        window.onload = async () => {
-            await DB.init();
-            document.getElementById('auth-form').onsubmit = async (e) => {
-                e.preventDefault();
-                const name = document.getElementById('in-name').value;
-                const email = document.getElementById('in-email').value;
-                const pass = document.getElementById('in-pass').value;
-
-                if (UI.isRegistering) {
-                    await Auth.register(name, email, pass);
-                } else {
-                    await Auth.login(email, pass);
-                }
-            };
-        };
-    </script>
+    function processPDFBinary(data) {
+        alert("PDF Data Received (" + data.length + " bytes). Parsing engine initialized.");
+        // Logic to parse PDF text content goes here.
+    }
+</script>
 </body>
 </html>
