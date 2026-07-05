@@ -3,63 +3,103 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Enterprise AI CV Scanner</title>
+    <title>Enterprise CV Intelligence Pro</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
     <style>
-        :root { --navy: #0a192f; --royal: #2962ff; --green: #00c853; --light: #f4f7f6; }
-        body { font-family: -apple-system, sans-serif; background: var(--light); margin: 0; }
-        nav { background: var(--navy); color: white; padding: 1rem; display: flex; gap: 1rem; }
-        main { padding: 20px; }
-        .card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
-        .drop-zone { border: 2px dashed var(--royal); padding: 40px; text-align: center; border-radius: 12px; cursor: pointer; }
+        :root { --navy: #0a192f; --royal: #2962ff; --light: #f4f7f6; }
+        body { font-family: -apple-system, sans-serif; background: var(--light); margin: 0; padding: 0; }
+        nav { background: var(--navy); color: white; padding: 1rem; display: flex; justify-content: center; gap: 20px; }
+        main { padding: 20px; max-width: 1000px; margin: auto; }
+        .card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        .drop-area { border: 2px dashed #ccc; padding: 40px; text-align: center; cursor: pointer; border-radius: 8px; }
+        table { width: 100%; border-collapse: collapse; background: white; border-radius: 8px; overflow: hidden; }
+        th, td { padding: 12px; border-bottom: 1px solid #eee; text-align: left; }
+        .btn { background: var(--royal); color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; width: 100%; font-weight: bold; }
     </style>
 </head>
 <body>
 
 <nav>
-    <button onclick="show('dashboard')">Dashboard</button>
-    <button onclick="show('upload')">Upload PDF CV</button>
+    <button onclick="show('upload')">Scanner</button>
+    <button onclick="show('list')">Database</button>
 </nav>
 
 <main>
     <section id="upload">
         <div class="card">
-            <h2>Select PDF CV</h2>
-            <div class="drop-zone" onclick="document.getElementById('fileInput').click()">
-                Click to upload PDF
-                <input type="file" id="fileInput" accept="application/pdf" style="display:none" onchange="handleFile(this.files)">
-            </div>
+            <h2>AI CV Processor</h2>
+            <input type="file" id="pdfInput" accept="application/pdf" style="display:none" onchange="processFile(this.files)">
+            <div class="drop-area" onclick="document.getElementById('pdfInput').click()">Click to Upload PDF CV</div>
+        </div>
+    </section>
+
+    <section id="list" style="display:none;">
+        <div class="card">
+            <h2>Candidate Database</h2>
+            <table id="dbTable">
+                <thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>ID Number</th><th>Action</th></tr></thead>
+                <tbody id="dbBody"></tbody>
+            </table>
         </div>
     </section>
 </main>
 
 <script>
-    // 1. Database Setup
     let db;
-    const request = indexedDB.open("CVScannerDB", 1);
-    request.onupgradeneeded = e => e.target.result.createObjectStore("candidates", {keyPath: "id", autoIncrement: true});
-    request.onsuccess = e => db = e.target.result;
+    const req = indexedDB.open("CVDatabase", 1);
+    req.onupgradeneeded = e => e.target.result.createObjectStore("candidates", {keyPath: "id", autoIncrement: true});
+    req.onsuccess = e => { db = e.target.result; renderTable(); };
 
-    // 2. File Handling
-    function handleFile(files) {
+    function show(id) {
+        document.getElementById('upload').style.display = id === 'upload' ? 'block' : 'none';
+        document.getElementById('list').style.display = id === 'list' ? 'block' : 'none';
+    }
+
+    async function processFile(files) {
         const file = files[0];
-        if (!file || file.type !== "application/pdf") {
-            return alert("Please upload a valid PDF file.");
-        }
-
         const reader = new FileReader();
-        reader.onload = function() {
-            // NOTE: To extract text from PDF entirely offline without a server,
-            // you must embed the PDF.js library source code here.
-            // For now, this is set up to capture the file binary.
-            const typedarray = new Uint8Array(this.result);
-            processPDFBinary(typedarray);
+        reader.onload = async function() {
+            const pdf = await pdfjsLib.getDocument(new Uint8Array(this.result)).promise;
+            let text = "";
+            for(let i=1; i<=pdf.numPages; i++) {
+                const page = await pdf.getPage(i);
+                const content = await page.getTextContent();
+                text += content.items.map(item => item.str).join(" ");
+            }
+            extractData(text);
         };
         reader.readAsArrayBuffer(file);
     }
 
-    function processPDFBinary(data) {
-        alert("PDF Data Received (" + data.length + " bytes). Parsing engine initialized.");
-        // Logic to parse PDF text content goes here.
+    function extractData(text) {
+        const candidate = {
+            name: text.substring(0, 30).trim(),
+            email: (text.match(/[\w.-]+@[\w.-]+\.[a-zA-Z]{2,6}/) || ["N/A"])[0],
+            phone: (text.match(/(?:\+?27|0)[6-8][0-9]\s?\d{3}\s?\d{4}/) || ["N/A"])[0],
+            idNumber: (text.match(/\d{13}/) || ["N/A"])[0]
+        };
+        db.transaction("candidates", "readwrite").objectStore("candidates").add(candidate).onsuccess = () => {
+            alert("Candidate Saved Successfully!");
+            renderTable();
+            show('list');
+        };
+    }
+
+    function renderTable() {
+        const body = document.getElementById('dbBody');
+        body.innerHTML = "";
+        db.transaction("candidates").objectStore("candidates").openCursor().onsuccess = e => {
+            const cursor = e.target.result;
+            if (cursor) {
+                body.innerHTML += `<tr><td>${cursor.value.name}</td><td>${cursor.value.email}</td><td>${cursor.value.phone}</td><td>${cursor.value.idNumber}</td>
+                <td><button onclick="deleteC(${cursor.value.id})">Del</button></td></tr>`;
+                cursor.continue();
+            }
+        };
+    }
+
+    function deleteC(id) {
+        db.transaction("candidates", "readwrite").objectStore("candidates").delete(id).onsuccess = renderTable;
     }
 </script>
 </body>
