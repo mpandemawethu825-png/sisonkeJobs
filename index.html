@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
     <meta name="description" content="AI-Powered Employment Intelligence Platform">
     <meta name="theme-color" content="#4285F4">
-    <title>Nexus AI | Employment Intelligence Platform</title>
+    <title>Nexus AI | Admin Intelligence Hub</title>
 
     <!-- External Libraries -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -143,7 +143,7 @@
         </div>
         <div id="ai-chat-messages" class="p-4 h-80 overflow-y-auto flex flex-col gap-3 text-sm">
             <div class="bg-gray-100 dark:bg-gray-800 p-3 rounded-lg rounded-tl-none self-start max-w-[85%] text-gray-800 dark:text-gray-200 shadow-sm">
-                Hello! I'm your AI Employment Assistant. You can ask me to "Find IT graduates", "Show top candidates", or "List open Admin jobs".
+                Hello Administrator! You can ask me to "Find IT graduates", "Show top candidates", or "List open jobs".
             </div>
         </div>
         <div class="p-3 border-t border-gray-200 dark:border-gray-700">
@@ -168,13 +168,13 @@
                     <i class="fa-solid fa-network-wired"></i>
                 </div>
                 <h1 class="text-3xl font-display font-bold text-gray-900 dark:text-white">Nexus Hub</h1>
-                <p class="text-sm text-gray-500 dark:text-gray-400 mt-2">AI-Powered Employment Intelligence</p>
+                <p class="text-sm text-gray-500 dark:text-gray-400 mt-2">Admin Intelligence Portal</p>
             </div>
 
             <!-- Login Form -->
             <form id="form-login" class="space-y-4">
                 <div>
-                    <label class="block text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wide mb-1">Email</label>
+                    <label class="block text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wide mb-1">Admin Email</label>
                     <input type="email" id="login-email" class="w-full px-4 py-3 rounded-xl input-glass" placeholder="admin@nexus.co.za" required>
                 </div>
                 <div>
@@ -188,45 +188,41 @@
                     <a href="#" class="text-brand-blue hover:underline font-medium">Forgot Password?</a>
                 </div>
                 <button type="submit" class="w-full bg-brand-blue hover:bg-blue-600 text-white font-bold py-3 px-4 rounded-xl shadow-lg transition-all transform hover:-translate-y-1 flex justify-center items-center gap-2">
-                    <i class="fa-solid fa-right-to-bracket"></i> Sign In
+                    <i class="fa-solid fa-right-to-bracket"></i> Secure Admin Login
                 </button>
             </form>
 
             <!-- Register Form (Hidden by default) -->
             <form id="form-register" class="space-y-4 hidden-view">
-                <div class="grid grid-cols-2 gap-2 mb-2">
-                    <button type="button" onclick="UI.setRegRole('candidate')" id="btn-reg-cand" class="py-2 border-2 border-brand-blue bg-blue-50 text-brand-blue rounded-lg font-semibold text-sm transition-colors dark:bg-blue-900/30">Candidate</button>
-                    <button type="button" onclick="UI.setRegRole('employer')" id="btn-reg-emp" class="py-2 border-2 border-transparent bg-gray-100 text-gray-500 rounded-lg font-semibold text-sm hover:bg-gray-200 transition-colors dark:bg-gray-800 dark:text-gray-400">Employer</button>
+                <div class="mb-4 text-center">
+                    <span class="bg-blue-100 text-brand-blue px-4 py-1 rounded-full text-xs font-bold uppercase tracking-wide">Administrator Registration</span>
                 </div>
-                <input type="hidden" id="reg-role" value="candidate">
                 
                 <div>
-                    <label class="block text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wide mb-1">Full Name / Company Name</label>
-                    <input type="text" id="reg-name" class="w-full px-4 py-3 rounded-xl input-glass" placeholder="John Doe" required>
+                    <label class="block text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wide mb-1">Admin Full Name</label>
+                    <input type="text" id="reg-name" class="w-full px-4 py-3 rounded-xl input-glass" placeholder="Admin Name" required>
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wide mb-1">Email</label>
-                    <input type="email" id="reg-email" class="w-full px-4 py-3 rounded-xl input-glass" placeholder="john@example.com" required>
+                    <label class="block text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wide mb-1">Admin Email</label>
+                    <input type="email" id="reg-email" class="w-full px-4 py-3 rounded-xl input-glass" placeholder="admin@nexus.co.za" required>
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wide mb-1">Password</label>
+                    <label class="block text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wide mb-1">Secure Password</label>
                     <input type="password" id="reg-pass" class="w-full px-4 py-3 rounded-xl input-glass" placeholder="••••••••" minlength="6" required>
                 </div>
                 <button type="submit" class="w-full bg-brand-green hover:bg-green-600 text-white font-bold py-3 px-4 rounded-xl shadow-lg transition-all transform hover:-translate-y-1">
-                    Create Account
+                    Register Admin Account
                 </button>
             </form>
 
             <div class="mt-6 text-center text-sm text-gray-600 dark:text-gray-400">
-                <span id="auth-switch-text">Don't have an account?</span> 
-                <button onclick="UI.toggleAuth()" class="text-brand-blue font-bold hover:underline" id="btn-auth-switch">Register</button>
+                <span id="auth-switch-text">New administrator?</span> 
+                <button onclick="UI.toggleAuth()" class="text-brand-blue font-bold hover:underline" id="btn-auth-switch">Register Here</button>
             </div>
             
             <!-- Quick Demo Login -->
             <div class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700 flex flex-wrap justify-center gap-2">
-                <button onclick="Auth.demoLogin('admin@nexus.co.za')" class="text-xs bg-gray-200 dark:bg-gray-700 px-3 py-1 rounded-full hover:bg-gray-300 dark:hover:bg-gray-600 transition">Admin Demo</button>
-                <button onclick="Auth.demoLogin('emp@nexus.co.za')" class="text-xs bg-gray-200 dark:bg-gray-700 px-3 py-1 rounded-full hover:bg-gray-300 dark:hover:bg-gray-600 transition">Employer Demo</button>
-                <button onclick="Auth.demoLogin('cand@nexus.co.za')" class="text-xs bg-gray-200 dark:bg-gray-700 px-3 py-1 rounded-full hover:bg-gray-300 dark:hover:bg-gray-600 transition">Candidate Demo</button>
+                <button onclick="Auth.demoLogin('admin@nexus.co.za')" class="text-xs bg-gray-200 dark:bg-gray-700 px-4 py-2 rounded-full hover:bg-gray-300 dark:hover:bg-gray-600 font-bold transition">Admin Demo Login</button>
             </div>
         </div>
     </div>
@@ -252,7 +248,7 @@
                 <div class="px-6 pb-4 mb-2 border-b border-gray-200 dark:border-gray-700 text-center">
                     <div class="w-16 h-16 mx-auto bg-gradient-to-br from-brand-blue to-purple-500 rounded-full flex items-center justify-center text-white text-xl font-bold shadow-md mb-2" id="nav-avatar">A</div>
                     <h3 class="font-semibold text-gray-800 dark:text-gray-100 truncate" id="nav-name">Admin User</h3>
-                    <span class="text-xs font-medium px-2 py-1 bg-blue-100 text-blue-800 rounded-full mt-1 inline-block" id="nav-role">Super Admin</span>
+                    <span class="text-xs font-medium px-2 py-1 bg-blue-100 text-blue-800 rounded-full mt-1 inline-block" id="nav-role">Administrator</span>
                 </div>
 
                 <!-- Dynamic Nav Links -->
@@ -265,7 +261,7 @@
                         <i class="fa-solid fa-moon"></i> Toggle Theme
                     </button>
                     <button onclick="Auth.logout()" class="w-full text-left px-4 py-2 mt-1 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors flex items-center gap-3 font-semibold">
-                        <i class="fa-solid fa-arrow-right-from-bracket"></i> Sign Out
+                        <i class="fa-solid fa-arrow-right-from-bracket"></i> Secure Sign Out
                     </button>
                 </div>
             </div>
@@ -273,7 +269,6 @@
 
         <!-- Main Content Area -->
         <main class="flex-1 p-4 md:p-8 overflow-y-auto h-screen relative" id="main-content">
-            <!-- Panels will be injected/toggled here -->
             
             <!-- PANEL: ADMIN DASHBOARD -->
             <div id="panel-admin" class="hidden-view animate-fade-in space-y-6">
@@ -282,7 +277,9 @@
                         <h2 class="text-2xl font-display font-bold text-gray-800 dark:text-white">Platform Intelligence</h2>
                         <p class="text-gray-500 dark:text-gray-400 text-sm">Real-time recruitment analytics and system health.</p>
                     </div>
-                    <div class="mt-4 md:mt-0 flex gap-2">
+                    
+                    <!-- Database Controls -->
+                    <div class="mt-4 md:mt-0 flex gap-2" id="admin-db-controls">
                         <button onclick="DB.exportBackup()" class="bg-gray-800 dark:bg-gray-700 text-white px-4 py-2 rounded-lg text-sm font-medium hover:shadow-lg transition-all"><i class="fa-solid fa-download mr-1"></i> Export DB</button>
                         <button onclick="document.getElementById('import-db-file').click()" class="bg-brand-blue text-white px-4 py-2 rounded-lg text-sm font-medium hover:shadow-lg transition-all"><i class="fa-solid fa-upload mr-1"></i> Import DB</button>
                         <input type="file" id="import-db-file" class="hidden" accept=".json" onchange="DB.importBackup(event)">
@@ -327,138 +324,12 @@
                     <div class="overflow-x-auto">
                         <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
                             <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-800/50 dark:text-gray-300 rounded-t-lg">
-                                <tr><th class="px-4 py-3">Timestamp</th><th class="px-4 py-3">Event</th><th class="px-4 py-3">User</th><th class="px-4 py-3">AI Confidence</th></tr>
+                                <tr><th class="px-4 py-3">Timestamp</th><th class="px-4 py-3">Event</th><th class="px-4 py-3">User ID</th><th class="px-4 py-3">AI Confidence</th></tr>
                             </thead>
                             <tbody id="admin-logs-body">
                                 <!-- Dynamic rows -->
                             </tbody>
                         </table>
-                    </div>
-                </div>
-            </div>
-
-            <!-- PANEL: CANDIDATE PORTAL (CV Upload & Profile) -->
-            <div id="panel-candidate" class="hidden-view animate-fade-in max-w-4xl mx-auto">
-                <div class="flex justify-between items-center mb-6">
-                    <h2 class="text-2xl font-display font-bold">My Career Profile</h2>
-                    <span id="cand-overall-score" class="px-4 py-2 rounded-full bg-gradient-to-r from-brand-blue to-purple-600 text-white font-bold shadow-lg">AI Score: --</span>
-                </div>
-                
-                <!-- AI Smart Uploader -->
-                <div class="glass-panel rounded-2xl p-6 border-2 border-dashed border-brand-blue/50 hover:border-brand-blue transition-colors text-center relative overflow-hidden group cursor-pointer mb-6" onclick="document.getElementById('cv-upload').click()">
-                    <input type="file" id="cv-upload" accept=".pdf" class="hidden" onchange="AI.handleCVUpload(event)">
-                    <div class="absolute inset-0 bg-brand-blue/5 group-hover:bg-brand-blue/10 transition-colors"></div>
-                    <div class="relative z-10 py-8">
-                        <div class="w-16 h-16 mx-auto bg-blue-100 text-brand-blue rounded-full flex items-center justify-center text-3xl mb-4 group-hover:scale-110 transition-transform">
-                            <i class="fa-solid fa-cloud-arrow-up"></i>
-                        </div>
-                        <h3 class="text-lg font-bold text-gray-800 dark:text-white" id="cv-upload-title">Smart CV Upload</h3>
-                        <p class="text-sm text-gray-500 mt-2" id="cv-upload-desc">Upload your PDF. Our AI will automatically extract your skills, experience, and qualifications.</p>
-                        
-                        <!-- AI Processing Animation -->
-                        <div id="cv-processing" class="hidden mt-4">
-                            <div class="flex justify-center gap-1 mb-2">
-                                <div class="w-2 h-2 bg-brand-blue rounded-full animate-bounce" style="animation-delay: 0s"></div>
-                                <div class="w-2 h-2 bg-brand-red rounded-full animate-bounce" style="animation-delay: 0.1s"></div>
-                                <div class="w-2 h-2 bg-brand-yellow rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
-                            </div>
-                            <span class="ai-pulse font-semibold text-sm">Nexus Engine Extracting Intelligence...</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Profile Data Form -->
-                <div class="glass-panel p-6 rounded-2xl mb-6">
-                    <h3 class="font-semibold border-b border-gray-200 dark:border-gray-700 pb-2 mb-4"><i class="fa-regular fa-id-card"></i> Extracted Profile Data</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div><label class="block text-xs font-semibold uppercase text-gray-500 mb-1">Full Name</label><input type="text" id="prof-name" class="w-full px-3 py-2 rounded-lg input-glass text-sm"></div>
-                        <div><label class="block text-xs font-semibold uppercase text-gray-500 mb-1">ID Number</label><input type="text" id="prof-id" class="w-full px-3 py-2 rounded-lg input-glass text-sm"></div>
-                        <div><label class="block text-xs font-semibold uppercase text-gray-500 mb-1">Email</label><input type="email" id="prof-email" class="w-full px-3 py-2 rounded-lg input-glass text-sm"></div>
-                        <div><label class="block text-xs font-semibold uppercase text-gray-500 mb-1">Phone</label><input type="text" id="prof-phone" class="w-full px-3 py-2 rounded-lg input-glass text-sm"></div>
-                        <div>
-                            <label class="block text-xs font-semibold uppercase text-gray-500 mb-1">Location (Province/Town)</label>
-                            <div class="flex gap-2">
-                                <select id="prof-province" class="w-1/2 px-3 py-2 rounded-lg input-glass text-sm">
-                                    <option value="">Province</option>
-                                    <option value="GP">Gauteng</option><option value="WC">Western Cape</option><option value="KZN">KwaZulu-Natal</option><option value="EC">Eastern Cape</option><option value="FS">Free State</option><option value="MP">Mpumalanga</option><option value="NW">North West</option><option value="NC">Northern Cape</option><option value="LP">Limpopo</option>
-                                </select>
-                                <input type="text" id="prof-town" placeholder="Town" class="w-1/2 px-3 py-2 rounded-lg input-glass text-sm">
-                            </div>
-                        </div>
-                        <div>
-                            <label class="block text-xs font-semibold uppercase text-gray-500 mb-1">Driver's License</label>
-                            <select id="prof-license" class="w-full px-3 py-2 rounded-lg input-glass text-sm">
-                                <option value="None">None</option><option value="Code 8">Code 8 (B/EB)</option><option value="Code 10">Code 10 (C1/EC1)</option><option value="Code 14">Code 14 (C/EC)</option>
-                            </select>
-                        </div>
-                        <div class="md:col-span-2">
-                            <label class="block text-xs font-semibold uppercase text-gray-500 mb-1">AI Detected Skills (Comma separated)</label>
-                            <input type="text" id="prof-skills" class="w-full px-3 py-2 rounded-lg input-glass text-sm" placeholder="e.g. Administration, Excel, Customer Service">
-                        </div>
-                        <div class="md:col-span-2">
-                            <label class="block text-xs font-semibold uppercase text-gray-500 mb-1">Qualifications / Education</label>
-                            <textarea id="prof-edu" class="w-full px-3 py-2 rounded-lg input-glass text-sm" rows="2"></textarea>
-                        </div>
-                    </div>
-                    <div class="mt-4 flex justify-end">
-                        <button onclick="UI.saveCandidateProfile()" class="bg-brand-blue hover:bg-blue-600 text-white font-bold py-2 px-6 rounded-lg shadow transition-all"><i class="fa-solid fa-save mr-1"></i> Save Profile</button>
-                    </div>
-                </div>
-
-                <!-- AI Scores Breakdown -->
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6" id="cand-scores-container">
-                    <!-- Injected dynamically -->
-                </div>
-
-                <!-- Recommended Jobs -->
-                <h3 class="text-xl font-display font-bold mt-8 mb-4">AI Recommended Jobs</h3>
-                <div id="cand-recommended-jobs" class="space-y-4">
-                    <!-- Jobs Injected Here -->
-                </div>
-            </div>
-
-            <!-- PANEL: EMPLOYER - POST JOB & APPLICANTS -->
-            <div id="panel-employer" class="hidden-view animate-fade-in space-y-6">
-                <div class="flex justify-between items-center mb-6">
-                    <h2 class="text-2xl font-display font-bold">Employer Workspace</h2>
-                    <button onclick="UI.showModal('modal-post-job')" class="bg-brand-blue hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg shadow transition-all"><i class="fa-solid fa-plus mr-1"></i> Post Vacancy</button>
-                </div>
-
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    <!-- Active Vacancies -->
-                    <div class="lg:col-span-1 space-y-4">
-                        <h3 class="font-semibold text-gray-700 dark:text-gray-300">My Active Vacancies</h3>
-                        <div id="emp-vacancies-list" class="space-y-3 max-h-[70vh] overflow-y-auto pr-2">
-                            <!-- Injected -->
-                        </div>
-                    </div>
-                    
-                    <!-- Applicant Pipeline Tracker -->
-                    <div class="lg:col-span-2 glass-panel p-6 rounded-2xl">
-                        <div class="flex justify-between items-center mb-4">
-                            <h3 class="font-semibold text-gray-700 dark:text-gray-300" id="pipeline-title">Applicant Pipeline (Select a Job)</h3>
-                            <div class="relative">
-                                <input type="text" id="emp-search-cand" placeholder="AI Search (e.g. 'Code 10 in GP')" class="pl-8 pr-3 py-1 text-sm rounded-full input-glass w-64" oninput="UI.filterApplicants()">
-                                <i class="fa-solid fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs"></i>
-                            </div>
-                        </div>
-                        
-                        <div class="overflow-x-auto">
-                            <table class="w-full text-sm text-left">
-                                <thead class="text-xs text-gray-500 uppercase border-b border-gray-200 dark:border-gray-700">
-                                    <tr>
-                                        <th class="px-4 py-3">Match</th>
-                                        <th class="px-4 py-3">Candidate</th>
-                                        <th class="px-4 py-3">Location</th>
-                                        <th class="px-4 py-3">Status</th>
-                                        <th class="px-4 py-3">Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="emp-applicants-body" class="divide-y divide-gray-100 dark:divide-gray-800">
-                                    <!-- Injected -->
-                                </tbody>
-                            </table>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -499,39 +370,6 @@
     
     <!-- Modal Backdrop -->
     <div id="modal-backdrop" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden opacity-0 transition-opacity flex items-center justify-center p-4">
-        
-        <!-- Post Job Modal -->
-        <div id="modal-post-job" class="modal-content glass-panel w-full max-w-lg rounded-2xl shadow-2xl p-6 hidden transform scale-95 transition-transform">
-            <div class="flex justify-between items-center mb-4">
-                <h3 class="text-xl font-bold">Create New Vacancy</h3>
-                <button onclick="UI.hideModal()" class="text-gray-500 hover:text-red-500"><i class="fa-solid fa-times"></i></button>
-            </div>
-            <form id="form-post-job" class="space-y-4">
-                <div>
-                    <label class="block text-xs font-semibold text-gray-500 mb-1">Job Title</label>
-                    <input type="text" id="job-title" class="w-full px-3 py-2 rounded-lg input-glass" required>
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold text-gray-500 mb-1">Description</label>
-                    <textarea id="job-desc" rows="3" class="w-full px-3 py-2 rounded-lg input-glass" required></textarea>
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold text-gray-500 mb-1">Required Skills (Comma separated)</label>
-                    <input type="text" id="job-skills" class="w-full px-3 py-2 rounded-lg input-glass" placeholder="Excel, Management, Admin" required>
-                </div>
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-xs font-semibold text-gray-500 mb-1">Location</label>
-                        <input type="text" id="job-loc" class="w-full px-3 py-2 rounded-lg input-glass" placeholder="e.g. Pretoria, GP">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-semibold text-gray-500 mb-1">Min. AI Score Match</label>
-                        <input type="number" id="job-min-score" class="w-full px-3 py-2 rounded-lg input-glass" value="60">
-                    </div>
-                </div>
-                <button type="submit" class="w-full bg-brand-green text-white font-bold py-3 rounded-lg mt-4 shadow-lg hover:bg-green-600 transition-colors">Post Vacancy</button>
-            </form>
-        </div>
 
         <!-- Candidate Preview Modal -->
         <div id="modal-cand-preview" class="modal-content glass-panel w-full max-w-2xl rounded-2xl shadow-2xl p-6 hidden transform scale-95 transition-transform">
@@ -626,27 +464,26 @@
             seedInitialData: async () => {
                 const users = await DB.getAll('users');
                 if (users.length === 0) {
-                    // Seed Super Admin
+                    // Seed Default Admin
                     await DB.put('users', {
                         id: 'admin_1', role: 'admin', name: 'System Admin', email: 'admin@nexus.co.za',
                         passwordHash: await Utils.hashPassword('admin123')
                     });
-                    // Seed Demo Employer
+                    
+                    // Seed Dummy Data so the Admin dashboard isn't completely empty
                     await DB.put('users', {
                         id: 'emp_1', role: 'employer', name: 'TechCorp SA', email: 'emp@nexus.co.za',
-                        passwordHash: await Utils.hashPassword('emp123')
+                        passwordHash: await Utils.hashPassword('emp123') // They can no longer log in
                     });
-                    // Seed Demo Candidate
                     await DB.put('users', {
                         id: 'cand_1', role: 'candidate', name: 'Jane Doe', email: 'cand@nexus.co.za',
-                        passwordHash: await Utils.hashPassword('cand123'),
+                        passwordHash: await Utils.hashPassword('cand123'), // They can no longer log in
                         profile: { 
                             skills: ['JavaScript', 'HTML', 'CSS', 'React'], province: 'GP', town: 'Pretoria',
                             license: 'Code 8', education: 'BSc Computer Science', overallScore: 88,
                             scores: { employability: 90, skills: 85, experience: 80, readiness: 95 }
                         }
                     });
-                    // Seed Job
                     await DB.put('jobs', {
                         id: 'job_1', employerId: 'emp_1', title: 'Junior Frontend Developer', desc: 'Looking for React dev.',
                         skills: ['JavaScript', 'React', 'CSS'], loc: 'Pretoria, GP', minScore: 70, date: new Date().toISOString()
@@ -699,28 +536,38 @@
                 const hash = await Utils.hashPassword(password);
                 const user = users.find(u => u.email === email && u.passwordHash === hash);
                 
-                if (user) {
+                // Strictly allow ONLY 'admin' role to log in
+                if (user && user.role === 'admin') {
                     Auth.currentUser = user;
                     sessionStorage.setItem('nexus_session', JSON.stringify(user));
-                    await DB.log('User Login', user.id, '100%');
+                    await DB.log('Admin Login', user.id, '100%');
                     UI.initDashboard();
                 } else {
-                    Utils.showToast('Invalid credentials or account locked.', 'error');
+                    Utils.showToast('Invalid credentials or unauthorized role (Admins only).', 'error');
                 }
             },
-            register: async (role, name, email, password) => {
+            register: async (name, email, password) => {
                 const users = await DB.getAll('users');
+                const role = 'admin'; // Hardcoded Admin registration
+                
+                // STRICT RULE: Enforce maximum of 3 Admins
+                const adminCount = users.filter(u => u.role === 'admin').length;
+                if (adminCount >= 3) {
+                    return Utils.showToast('Registration restricted: System maximum of 3 Admins reached.', 'error');
+                }
+
                 if (users.find(u => u.email === email)) return Utils.showToast('Email already in use', 'error');
                 
                 const newUser = {
                     id: Utils.generateId(), role, name, email,
                     passwordHash: await Utils.hashPassword(password),
-                    profile: role === 'candidate' ? { scores: {}, skills: [] } : null,
+                    profile: null,
                     created: new Date().toISOString()
                 };
+                
                 await DB.put('users', newUser);
-                await DB.log('New User Registered', newUser.id, '100%');
-                Utils.showToast('Registration successful! Logging in...', 'success');
+                await DB.log('New Admin Registered', newUser.id, '100%');
+                Utils.showToast('Admin registration successful! Logging in...', 'success');
                 Auth.login(email, password);
             },
             logout: () => {
@@ -731,7 +578,9 @@
             checkSession: () => {
                 const sess = sessionStorage.getItem('nexus_session');
                 if (sess) {
-                    Auth.currentUser = JSON.parse(sess);
+                    const user = JSON.parse(sess);
+                    if (user.role !== 'admin') return false; // Secondary failsafe
+                    Auth.currentUser = user;
                     UI.initDashboard();
                     return true;
                 }
@@ -739,111 +588,15 @@
             },
             demoLogin: (email) => {
                 document.getElementById('login-email').value = email;
-                document.getElementById('login-pass').value = email.split('@')[0] + '123'; // hacky match for seeded passwords
+                document.getElementById('login-pass').value = email.split('@')[0] + '123'; 
                 document.getElementById('form-login').dispatchEvent(new Event('submit'));
             }
         };
 
         // -----------------------------------------
-        // 4. MOCK AI ENGINE (Employment Logic)
+        // 4. MOCK AI ENGINE 
         // -----------------------------------------
         const AI = {
-            // Simulated CV Parsing (Using PDF.js for text, regex for intelligence)
-            handleCVUpload: async (e) => {
-                const file = e.target.files[0];
-                if (!file || file.type !== "application/pdf") return Utils.showToast("Please upload a PDF.", "error");
-                
-                document.getElementById('cv-upload-title').innerText = "Processing...";
-                document.getElementById('cv-processing').classList.remove('hidden');
-                
-                try {
-                    // 1. PDF Text Extraction
-                    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
-                    const fileBuffer = await file.arrayBuffer();
-                    const pdf = await pdfjsLib.getDocument(fileBuffer).promise;
-                    let text = "";
-                    for (let i = 1; i <= pdf.numPages; i++) {
-                        const page = await pdf.getPage(i);
-                        const content = await page.getTextContent();
-                        text += content.items.map(item => item.str).join(" ") + " ";
-                    }
-                    
-                    // 2. Mock AI Natural Language Processing (Regex based for single file constraint)
-                    await new Promise(r => setTimeout(r, 1500)); // Simulate think time
-                    
-                    const extracted = AI.parseText(text);
-                    
-                    // Populate UI
-                    if(extracted.email) document.getElementById('prof-email').value = extracted.email;
-                    if(extracted.phone) document.getElementById('prof-phone').value = extracted.phone;
-                    if(extracted.skills.length) document.getElementById('prof-skills').value = extracted.skills.join(', ');
-                    if(extracted.education) document.getElementById('prof-edu').value = extracted.education;
-                    
-                    // Generate AI Scores
-                    const scores = AI.generateScores(extracted);
-                    Auth.currentUser.profile = { ...Auth.currentUser.profile, ...extracted, scores, overallScore: scores.employability };
-                    
-                    Utils.showToast("AI Extraction Complete", "success");
-                    await DB.log('CV Parsed via AI', Auth.currentUser.id, '92%');
-                    UI.renderCandidateProfile();
-
-                } catch (err) {
-                    console.error(err);
-                    Utils.showToast("AI parsing failed. Please enter manually.", "error");
-                } finally {
-                    document.getElementById('cv-upload-title').innerText = "Smart CV Upload";
-                    document.getElementById('cv-processing').classList.add('hidden');
-                }
-            },
-
-            parseText: (text) => {
-                const res = { skills: [], education: "", email: "", phone: "" };
-                // Email
-                const em = text.match(/[a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9_-]+/i);
-                if(em) res.email = em[0];
-                // Phone
-                const ph = text.match(/(?:\+27|0)[6-8][0-9\s-]{8,10}/);
-                if(ph) res.phone = ph[0].trim();
-                
-                // Skills Dictionary Matcher
-                const keywords = ["Administration", "Excel", "Customer Service", "IT", "React", "JavaScript", "Management", "Sales", "Accounting", "Data Entry", "Logistics", "Marketing", "Python"];
-                keywords.forEach(kw => {
-                    if (new RegExp("\\b" + kw + "\\b", "i").test(text)) res.skills.push(kw);
-                });
-
-                // Education heuristics
-                if(/degree|BSc|BA|BCom/i.test(text)) res.education = "Bachelor's Degree";
-                else if(/diploma/i.test(text)) res.education = "National Diploma";
-                else if(/matric|grade 12/i.test(text)) res.education = "Matric / Grade 12";
-
-                return res;
-            },
-
-            generateScores: (profile) => {
-                // Pseudo-AI Scoring Algorithm
-                const base = 50;
-                const skillBonus = Math.min((profile.skills?.length || 0) * 5, 25);
-                const eduBonus = profile.education?.includes("Degree") ? 20 : (profile.education?.includes("Diploma") ? 15 : 5);
-                
-                const employability = Math.min(base + skillBonus + eduBonus, 99);
-                return {
-                    employability: employability,
-                    skills: Math.min(40 + skillBonus * 2, 98),
-                    experience: Math.floor(Math.random() * 30) + 60, // Mock
-                    readiness: Math.floor(Math.random() * 20) + 75 // Mock
-                };
-            },
-
-            calculateMatch: (candidateProfile, jobSkillsArray) => {
-                if(!candidateProfile || !candidateProfile.skills || jobSkillsArray.length === 0) return 0;
-                const candSkills = candidateProfile.skills.map(s => s.toLowerCase());
-                let matches = 0;
-                jobSkillsArray.forEach(req => {
-                    if(candSkills.some(s => s.includes(req.toLowerCase()) || req.toLowerCase().includes(s))) matches++;
-                });
-                return Math.min(Math.round((matches / jobSkillsArray.length) * 100) + 15, 100); // +15 AI fuzziness bonus
-            },
-
             // Built-in Chat Assistant Logic
             handleQuery: async () => {
                 const input = document.getElementById('ai-chat-input');
@@ -859,19 +612,19 @@
                     
                     if (query.includes('job') || query.includes('vacanc')) {
                         const jobs = await DB.getAll('jobs');
-                        reply = `I found ${jobs.length} active vacancies. <br>${jobs.map(j => `• ${j.title} (${j.loc})`).join('<br>')}`;
+                        reply = `I found ${jobs.length} active vacancies in the database. <br>${jobs.map(j => `• ${j.title} (${j.loc})`).join('<br>')}`;
                     } 
                     else if (query.includes('candidate') || query.includes('graduate')) {
                         const users = await DB.getAll('users');
                         const cands = users.filter(u => u.role === 'candidate');
-                        reply = `There are ${cands.length} candidates registered. Top profiles:<br>${cands.slice(0,3).map(c => `• ${c.name} (Score: ${c.profile?.overallScore || 'N/A'})`).join('<br>')}`;
+                        reply = `There are ${cands.length} candidates registered in the DB. Top profiles:<br>${cands.slice(0,3).map(c => `• ${c.name} (Score: ${c.profile?.overallScore || 'N/A'})`).join('<br>')}`;
                     }
                     else if (query.includes('unemployed')) {
                         reply = "Filtering by 'Unemployed' status. 65% of our database matches this criteria currently. Go to Universal Search to view the list.";
                     }
 
                     UI.addChatMessage(reply, 'ai');
-                    await DB.log('AI Chat Query', Auth.currentUser?.id, '85%');
+                    await DB.log('Admin AI Query', Auth.currentUser?.id, '85%');
                 }, 800);
             },
 
@@ -925,16 +678,16 @@
                     e.preventDefault();
                     Auth.login(document.getElementById('login-email').value, document.getElementById('login-pass').value);
                 });
+                
+                // Modified Registration Handler (Admins only)
                 document.getElementById('form-register').addEventListener('submit', (e) => {
                     e.preventDefault();
                     Auth.register(
-                        document.getElementById('reg-role').value,
                         document.getElementById('reg-name').value,
                         document.getElementById('reg-email').value,
                         document.getElementById('reg-pass').value
                     );
                 });
-                document.getElementById('form-post-job').addEventListener('submit', UI.handlePostJob);
 
                 // Initial Check
                 if (!Auth.checkSession()) UI.showView('view-auth');
@@ -946,7 +699,7 @@
             },
 
             showPanel: (panelId) => {
-                ['panel-admin', 'panel-candidate', 'panel-employer', 'panel-search'].forEach(id => {
+                ['panel-admin', 'panel-search'].forEach(id => {
                     const el = document.getElementById(id);
                     if(el) el.classList.add('hidden-view');
                 });
@@ -967,21 +720,8 @@
                 } else {
                     regForm.classList.add('hidden-view');
                     loginForm.classList.remove('hidden-view');
-                    document.getElementById('auth-switch-text').innerText = "Don't have an account?";
-                    document.getElementById('btn-auth-switch').innerText = "Register";
-                }
-            },
-
-            setRegRole: (role) => {
-                document.getElementById('reg-role').value = role;
-                const cBtn = document.getElementById('btn-reg-cand');
-                const eBtn = document.getElementById('btn-reg-emp');
-                if (role === 'candidate') {
-                    cBtn.className = "py-2 border-2 border-brand-blue bg-blue-50 text-brand-blue rounded-lg font-semibold text-sm transition-colors dark:bg-blue-900/30";
-                    eBtn.className = "py-2 border-2 border-transparent bg-gray-100 text-gray-500 rounded-lg font-semibold text-sm hover:bg-gray-200 transition-colors dark:bg-gray-800 dark:text-gray-400";
-                } else {
-                    eBtn.className = "py-2 border-2 border-brand-blue bg-blue-50 text-brand-blue rounded-lg font-semibold text-sm transition-colors dark:bg-blue-900/30";
-                    cBtn.className = "py-2 border-2 border-transparent bg-gray-100 text-gray-500 rounded-lg font-semibold text-sm hover:bg-gray-200 transition-colors dark:bg-gray-800 dark:text-gray-400";
+                    document.getElementById('auth-switch-text').innerText = "New administrator?";
+                    document.getElementById('btn-auth-switch').innerText = "Register Here";
                 }
             },
 
@@ -1015,242 +755,19 @@
                 // Setup Sidebar
                 document.getElementById('nav-name').innerText = user.name;
                 document.getElementById('nav-avatar').innerText = user.name.charAt(0);
-                document.getElementById('nav-role').innerText = user.role.toUpperCase();
                 
                 const navLinks = document.getElementById('nav-links');
                 navLinks.innerHTML = '';
                 
-                // Role routing & rendering
-                if (user.role === 'admin') {
-                    navLinks.innerHTML += `<button onclick="UI.showPanel('panel-admin')" class="w-full text-left px-4 py-3 rounded-lg font-medium text-brand-blue bg-blue-50 dark:bg-blue-900/20"><i class="fa-solid fa-chart-pie w-6"></i> Analytics</button>`;
-                    navLinks.innerHTML += `<button onclick="UI.showPanel('panel-search')" class="w-full text-left px-4 py-3 rounded-lg font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"><i class="fa-solid fa-search w-6"></i> AI Search</button>`;
-                    UI.showPanel('panel-admin');
-                    UI.renderAdminDashboard();
-                } 
-                else if (user.role === 'employer') {
-                    navLinks.innerHTML += `<button onclick="UI.showPanel('panel-employer')" class="w-full text-left px-4 py-3 rounded-lg font-medium text-brand-blue bg-blue-50 dark:bg-blue-900/20"><i class="fa-solid fa-briefcase w-6"></i> My Vacancies</button>`;
-                    navLinks.innerHTML += `<button onclick="UI.showPanel('panel-search')" class="w-full text-left px-4 py-3 rounded-lg font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"><i class="fa-solid fa-search w-6"></i> Discover Talent</button>`;
-                    UI.showPanel('panel-employer');
-                    UI.renderEmployerDashboard();
-                }
-                else if (user.role === 'candidate') {
-                    navLinks.innerHTML += `<button onclick="UI.showPanel('panel-candidate')" class="w-full text-left px-4 py-3 rounded-lg font-medium text-brand-blue bg-blue-50 dark:bg-blue-900/20"><i class="fa-solid fa-user-tie w-6"></i> My Profile</button>`;
-                    UI.showPanel('panel-candidate');
-                    UI.renderCandidateProfile();
-                }
+                // Admin Routing
+                navLinks.innerHTML += `<button onclick="UI.showPanel('panel-admin')" class="w-full text-left px-4 py-3 rounded-lg font-medium text-brand-blue bg-blue-50 dark:bg-blue-900/20"><i class="fa-solid fa-chart-pie w-6"></i> Analytics DB</button>`;
+                navLinks.innerHTML += `<button onclick="UI.showPanel('panel-search')" class="w-full text-left px-4 py-3 rounded-lg font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"><i class="fa-solid fa-search w-6"></i> Candidate Search</button>`;
+                
+                UI.showPanel('panel-admin');
+                UI.renderAdminDashboard();
 
-                // Show floating button
+                // Show floating chat button
                 document.getElementById('ai-chat-btn').classList.remove('hidden');
-            },
-
-            // --- Candidate Specific ---
-            renderCandidateProfile: async () => {
-                const p = Auth.currentUser.profile || {};
-                
-                // Form Fields
-                document.getElementById('prof-name').value = Auth.currentUser.name || '';
-                document.getElementById('prof-id').value = p.idNum || '';
-                document.getElementById('prof-email').value = Auth.currentUser.email || '';
-                document.getElementById('prof-phone').value = p.phone || '';
-                document.getElementById('prof-province').value = p.province || '';
-                document.getElementById('prof-town').value = p.town || '';
-                document.getElementById('prof-license').value = p.license || 'None';
-                document.getElementById('prof-skills').value = (p.skills || []).join(', ');
-                document.getElementById('prof-edu').value = p.education || '';
-                
-                document.getElementById('cand-overall-score').innerText = `AI Score: ${p.overallScore || 'N/A'}`;
-
-                // Score Cards
-                const s = p.scores || {};
-                const scHtml = [
-                    { t: 'Employability', v: s.employability || 0, c: 'text-brand-blue' },
-                    { t: 'Skill Match', v: s.skills || 0, c: 'text-brand-green' },
-                    { t: 'Experience Depth', v: s.experience || 0, c: 'text-brand-yellow' },
-                    { t: 'Interview Ready', v: s.readiness || 0, c: 'text-purple-500' }
-                ].map(item => `
-                    <div class="glass-panel p-4 rounded-xl text-center">
-                        <div class="text-xs text-gray-500 font-semibold uppercase">${item.t}</div>
-                        <div class="text-3xl font-bold mt-1 ${item.c}">${item.v}%</div>
-                    </div>
-                `).join('');
-                document.getElementById('cand-scores-container').innerHTML = scHtml;
-
-                // Recommended Jobs
-                const jobs = await DB.getAll('jobs');
-                const apps = await DB.getAll('applications');
-                const myApps = apps.filter(a => a.candidateId === Auth.currentUser.id);
-                
-                let recHtml = '';
-                for (let job of jobs) {
-                    const match = AI.calculateMatch(p, job.skills);
-                    if (match > 30) {
-                        const hasApplied = myApps.find(a => a.vacancyId === job.id);
-                        recHtml += `
-                            <div class="glass-panel p-4 rounded-xl flex flex-col md:flex-row justify-between items-center gap-4">
-                                <div>
-                                    <h4 class="font-bold text-gray-800 dark:text-white text-lg">${job.title} <span class="text-sm font-normal text-gray-500">• ${job.loc}</span></h4>
-                                    <p class="text-sm text-gray-600 dark:text-gray-400 line-clamp-1">${job.desc}</p>
-                                    <div class="mt-2 flex gap-2 text-xs font-semibold">
-                                        <span class="bg-green-100 text-brand-green px-2 py-1 rounded">Match: ${match}%</span>
-                                    </div>
-                                </div>
-                                <div class="shrink-0 w-full md:w-auto">
-                                    ${hasApplied 
-                                        ? `<span class="px-4 py-2 bg-gray-200 text-gray-600 rounded-lg font-bold block text-center w-full">Applied (${hasApplied.status})</span>`
-                                        : `<button onclick="UI.applyForJob('${job.id}')" class="w-full bg-brand-blue text-white px-6 py-2 rounded-lg font-bold hover:bg-blue-600 transition-colors">1-Click Apply</button>`}
-                                </div>
-                            </div>
-                        `;
-                    }
-                }
-                document.getElementById('cand-recommended-jobs').innerHTML = recHtml || '<p class="text-gray-500">No AI recommendations yet. Update your profile to get matches.</p>';
-            },
-
-            saveCandidateProfile: async () => {
-                const user = Auth.currentUser;
-                const skInput = document.getElementById('prof-skills').value;
-                const skillsArr = skInput.split(',').map(s => s.trim()).filter(s => s);
-                
-                const profileData = {
-                    idNum: document.getElementById('prof-id').value,
-                    phone: document.getElementById('prof-phone').value,
-                    province: document.getElementById('prof-province').value,
-                    town: document.getElementById('prof-town').value,
-                    license: document.getElementById('prof-license').value,
-                    skills: skillsArr,
-                    education: document.getElementById('prof-edu').value,
-                };
-                
-                // Recalculate scores based on manual edit
-                profileData.scores = AI.generateScores(profileData);
-                profileData.overallScore = profileData.scores.employability;
-                
-                user.name = document.getElementById('prof-name').value;
-                user.email = document.getElementById('prof-email').value;
-                user.profile = profileData;
-
-                await DB.put('users', user);
-                sessionStorage.setItem('nexus_session', JSON.stringify(user));
-                Utils.showToast("Profile manually updated successfully.", "success");
-                UI.renderCandidateProfile();
-            },
-
-            applyForJob: async (jobId) => {
-                const appId = Utils.generateId();
-                await DB.put('applications', {
-                    id: appId, vacancyId: jobId, candidateId: Auth.currentUser.id, status: 'Registered', date: new Date().toISOString()
-                });
-                Utils.showToast("Application submitted successfully!", "success");
-                UI.renderCandidateProfile();
-            },
-
-            // --- Employer Specific ---
-            renderEmployerDashboard: async () => {
-                const jobs = await DB.getAll('jobs');
-                const myJobs = jobs.filter(j => j.employerId === Auth.currentUser.id);
-                
-                const list = document.getElementById('emp-vacancies-list');
-                list.innerHTML = myJobs.map(j => `
-                    <div class="glass-panel p-4 rounded-xl border-l-4 border-l-brand-blue cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800 transition" onclick="UI.loadJobPipeline('${j.id}', '${Utils.escapeHtml(j.title)}')">
-                        <h4 class="font-bold text-gray-800 dark:text-white">${j.title}</h4>
-                        <p class="text-xs text-gray-500 mb-2">${j.loc} • Min Score: ${j.minScore}</p>
-                        <div class="flex gap-1 overflow-hidden">
-                            ${(j.skills || []).slice(0,3).map(s => `<span class="text-[10px] bg-gray-200 dark:bg-gray-700 px-1.5 py-0.5 rounded">${s}</span>`).join('')}
-                        </div>
-                    </div>
-                `).join('') || '<p class="text-sm text-gray-500">No active vacancies. Post one to start tracking.</p>';
-                
-                document.getElementById('emp-applicants-body').innerHTML = '<tr><td colspan="5" class="text-center py-8 text-gray-500">Select a vacancy on the left to view applicants.</td></tr>';
-            },
-
-            handlePostJob: async (e) => {
-                e.preventDefault();
-                const skillsStr = document.getElementById('job-skills').value;
-                const newJob = {
-                    id: Utils.generateId(),
-                    employerId: Auth.currentUser.id,
-                    title: document.getElementById('job-title').value,
-                    desc: document.getElementById('job-desc').value,
-                    skills: skillsStr.split(',').map(s=>s.trim()).filter(s=>s),
-                    loc: document.getElementById('job-loc').value,
-                    minScore: parseInt(document.getElementById('job-min-score').value) || 0,
-                    date: new Date().toISOString()
-                };
-                await DB.put('jobs', newJob);
-                Utils.showToast("Vacancy posted successfully", "success");
-                UI.hideModal();
-                UI.renderEmployerDashboard();
-                document.getElementById('form-post-job').reset();
-            },
-
-            currentJobPipelineId: null,
-            loadJobPipeline: async (jobId, jobTitle) => {
-                UI.currentJobPipelineId = jobId;
-                document.getElementById('pipeline-title').innerText = `Pipeline: ${jobTitle}`;
-                UI.filterApplicants();
-            },
-
-            filterApplicants: async () => {
-                if(!UI.currentJobPipelineId) return;
-                const jobId = UI.currentJobPipelineId;
-                const q = document.getElementById('emp-search-cand').value.toLowerCase();
-                
-                const job = await DB.get('jobs', jobId);
-                const apps = await DB.getAll('applications');
-                const jobApps = apps.filter(a => a.vacancyId === jobId);
-                
-                const tbody = document.getElementById('emp-applicants-body');
-                if(jobApps.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="5" class="text-center py-8 text-gray-500">No applicants yet for this vacancy.</td></tr>';
-                    return;
-                }
-
-                let html = '';
-                for (let app of jobApps) {
-                    const cand = await DB.get('users', app.candidateId);
-                    if (!cand) continue;
-                    
-                    const match = AI.calculateMatch(cand.profile, job.skills);
-                    const profStr = JSON.stringify(cand.profile || {}).toLowerCase() + cand.name.toLowerCase();
-                    if (q && !profStr.includes(q)) continue; // search filter
-
-                    // Status Colors
-                    const stColors = { 'Registered':'bg-gray-100 text-gray-700', 'Under Review':'bg-yellow-100 text-yellow-800', 'Shortlisted':'bg-blue-100 text-blue-800', 'Interview Scheduled':'bg-purple-100 text-purple-800', 'Hired':'bg-green-100 text-green-800', 'Rejected':'bg-red-100 text-red-800' };
-                    const sc = stColors[app.status] || stColors['Registered'];
-
-                    html += `
-                        <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition">
-                            <td class="px-4 py-3"><span class="font-bold text-brand-blue">${match}%</span></td>
-                            <td class="px-4 py-3 cursor-pointer" onclick="UI.showCandidate('${cand.id}')">
-                                <div class="font-semibold text-gray-800 dark:text-gray-200 hover:text-brand-blue hover:underline">${cand.name}</div>
-                                <div class="text-xs text-gray-500">${cand.email}</div>
-                            </td>
-                            <td class="px-4 py-3 text-xs text-gray-600 dark:text-gray-400">${cand.profile?.town || 'N/A'}</td>
-                            <td class="px-4 py-3">
-                                <select class="text-xs font-semibold rounded-full px-2 py-1 border-0 focus:ring-0 cursor-pointer ${sc}" onchange="UI.updateAppStatus('${app.id}', this.value)">
-                                    ${Object.keys(stColors).map(s => `<option value="${s}" ${app.status===s?'selected':''}>${s}</option>`).join('')}
-                                </select>
-                            </td>
-                            <td class="px-4 py-3">
-                                <div class="flex gap-2">
-                                    <a href="https://wa.me/${(cand.profile?.phone||'').replace(/[^0-9]/g,'')}?text=Hi ${cand.name}, regarding your application for ${job.title}..." target="_blank" class="text-green-500 hover:scale-110 transition" title="WhatsApp"><i class="fa-brands fa-whatsapp text-lg"></i></a>
-                                    <a href="mailto:${cand.email}" class="text-brand-blue hover:scale-110 transition" title="Email"><i class="fa-regular fa-envelope text-lg"></i></a>
-                                </div>
-                            </td>
-                        </tr>
-                    `;
-                }
-                tbody.innerHTML = html || '<tr><td colspan="5" class="text-center py-8 text-gray-500">No applicants match your search.</td></tr>';
-            },
-
-            updateAppStatus: async (appId, newStatus) => {
-                const app = await DB.get('applications', appId);
-                if(app) {
-                    app.status = newStatus;
-                    await DB.put('applications', app);
-                    Utils.showToast("Status updated", "success");
-                    // DB.log implied logic for brevity
-                }
             },
 
             showCandidate: async (candId) => {
