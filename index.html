@@ -1,905 +1,131 @@
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-    <meta name="description" content="AI-Powered Employment Intelligence Platform">
-    <meta name="theme-color" content="#4285F4">
-    <title>Nexus AI | Admin Intelligence Hub</title>
-
-    <!-- External Libraries -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nexus | Admin Secure Portal</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-    <!-- Tailwind Config for Theme & Colors -->
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                        display: ['Poppins', 'sans-serif'],
-                    },
-                    colors: {
-                        brand: {
-                            blue: '#4285F4', red: '#EA4335', yellow: '#FBBC05', green: '#34A853',
-                            dark: '#0B0F19', glass: 'rgba(255, 255, 255, 0.7)'
-                        }
-                    },
-                    animation: {
-                        'blob': 'blob 10s infinite',
-                        'fade-in': 'fadeIn 0.4s ease-out forwards',
-                        'slide-up': 'slideUp 0.5s ease-out forwards',
-                    },
-                    keyframes: {
-                        blob: {
-                            '0%': { transform: 'translate(0px, 0px) scale(1)' },
-                            '33%': { transform: 'translate(30px, -50px) scale(1.1)' },
-                            '66%': { transform: 'translate(-20px, 20px) scale(0.9)' },
-                            '100%': { transform: 'translate(0px, 0px) scale(1)' }
-                        },
-                        fadeIn: {
-                            '0%': { opacity: '0' },
-                            '100%': { opacity: '1' }
-                        },
-                        slideUp: {
-                            '0%': { opacity: '0', transform: 'translateY(20px)' },
-                            '100%': { opacity: '1', transform: 'translateY(0)' }
-                        }
-                    }
-                }
-            }
-        }
-    </script>
-
-    <style>
-        /* Base & Glassmorphism Styles */
-        :root {
-            --glass-bg: rgba(255, 255, 255, 0.65);
-            --glass-border: rgba(255, 255, 255, 0.4);
-            --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
-        }
-        .dark {
-            --glass-bg: rgba(17, 24, 39, 0.75);
-            --glass-border: rgba(255, 255, 255, 0.1);
-            --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
-        }
-        body {
-            background-color: #f3f4f6;
-            color: #1f2937;
-            overflow-x: hidden;
-            transition: background-color 0.3s ease;
-        }
-        .dark body { background-color: #0f172a; color: #f8fafc; }
-        
-        /* Glass Panel */
-        .glass-panel {
-            background: var(--glass-bg);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid var(--glass-border);
-            box-shadow: var(--glass-shadow);
-        }
-        
-        /* Background Blobs */
-        .bg-shapes { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1; overflow: hidden; pointer-events: none; }
-        .blob { position: absolute; filter: blur(80px); border-radius: 50%; opacity: 0.6; }
-        .dark .blob { opacity: 0.3; }
-        .blob-1 { top: -10%; left: -10%; width: 50vw; height: 50vw; background: #4285F4; animation: blob 15s infinite; }
-        .blob-2 { bottom: -10%; right: -10%; width: 40vw; height: 40vw; background: #34A853; animation: blob 18s infinite alternate; }
-        .blob-3 { top: 40%; left: 40%; width: 30vw; height: 30vw; background: #EA4335; animation: blob 20s infinite alternate-reverse; }
-
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
-        .dark ::-webkit-scrollbar-thumb { background: #475569; }
-
-        /* UI Utilities */
-        .hidden-view { display: none !important; }
-        .input-glass { background: rgba(255,255,255,0.5); border: 1px solid rgba(0,0,0,0.1); transition: all 0.2s; }
-        .dark .input-glass { background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); color: white; }
-        .input-glass:focus { outline: none; border-color: #4285F4; box-shadow: 0 0 0 3px rgba(66, 133, 244, 0.2); }
-        
-        /* AI Loader */
-        .ai-pulse {
-            background: linear-gradient(90deg, #4285F4, #EA4335, #FBBC05, #34A853);
-            background-size: 300% 300%;
-            animation: gradientMove 2s ease infinite;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        @keyframes gradientMove { 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
-        
-        .status-badge { padding: 4px 10px; border-radius: 99px; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; }
-    </style>
 </head>
-<body class="antialiased font-sans transition-colors duration-300">
+<body class="bg-gray-100 h-screen flex items-center justify-center">
 
-    <!-- Background Blobs -->
-    <div class="bg-shapes">
-        <div class="blob blob-1"></div>
-        <div class="blob blob-2"></div>
-        <div class="blob blob-3"></div>
+    <!-- Auth Container -->
+    <div id="view-auth" class="bg-white p-8 rounded-xl shadow-2xl w-full max-w-md">
+        <h2 id="auth-title" class="text-2xl font-bold text-center mb-6">Admin Login</h2>
+        <form id="auth-form" class="space-y-4">
+            <input type="text" id="in-name" placeholder="Full Name (Register Only)" class="w-full px-4 py-2 border rounded-lg hidden">
+            <input type="email" id="in-email" placeholder="Email Address" class="w-full px-4 py-2 border rounded-lg" required>
+            <input type="password" id="in-pass" placeholder="Password" class="w-full px-4 py-2 border rounded-lg" required>
+            <button type="submit" id="main-btn" class="w-full bg-blue-600 text-white py-2 rounded-lg font-bold">Login</button>
+        </form>
+        <button onclick="UI.toggleMode()" id="toggle-btn" class="w-full mt-4 text-sm text-blue-600 hover:underline">Need to Create Admin Account?</button>
     </div>
 
-    <!-- Toast Notifications Container -->
-    <div id="toast-container" class="fixed top-4 right-4 z-50 flex flex-col gap-2"></div>
-
-    <!-- AI Assistant Floating Button -->
-    <button id="ai-chat-btn" class="fixed bottom-6 right-6 w-14 h-14 bg-gradient-to-r from-brand-blue to-purple-600 rounded-full shadow-2xl text-white flex items-center justify-center text-2xl hover:scale-110 transition-transform z-40 hidden">
-        <i class="fa-solid fa-robot"></i>
-    </button>
-
-    <!-- AI Chat Panel -->
-    <div id="ai-chat-panel" class="fixed bottom-24 right-6 w-80 md:w-96 glass-panel rounded-2xl shadow-2xl z-40 flex flex-col hidden transition-all">
-        <div class="p-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center bg-brand-blue text-white rounded-t-2xl">
-            <h3 class="font-display font-semibold flex items-center gap-2"><i class="fa-solid fa-sparkles"></i> Nexus AI Assistant</h3>
-            <button onclick="UI.toggleChat()" class="text-white hover:text-gray-200"><i class="fa-solid fa-times"></i></button>
-        </div>
-        <div id="ai-chat-messages" class="p-4 h-80 overflow-y-auto flex flex-col gap-3 text-sm">
-            <div class="bg-gray-100 dark:bg-gray-800 p-3 rounded-lg rounded-tl-none self-start max-w-[85%] text-gray-800 dark:text-gray-200 shadow-sm">
-                Hello Administrator! You can ask me to "Find IT graduates", "Show top candidates", or "List open jobs".
-            </div>
-        </div>
-        <div class="p-3 border-t border-gray-200 dark:border-gray-700">
-            <div class="relative">
-                <input type="text" id="ai-chat-input" placeholder="Ask AI anything..." class="w-full pl-4 pr-10 py-2 rounded-full input-glass text-sm" onkeypress="if(event.key==='Enter') AI.handleQuery()">
-                <button onclick="AI.handleQuery()" class="absolute right-2 top-1/2 -translate-y-1/2 text-brand-blue hover:text-brand-dark dark:hover:text-white">
-                    <i class="fa-solid fa-paper-plane"></i>
-                </button>
-            </div>
+    <!-- Dashboard Container -->
+    <div id="view-dashboard" class="hidden w-full h-full p-8">
+        <h1 class="text-3xl font-bold mb-4">Nexus Admin Dashboard</h1>
+        <div class="bg-white p-6 rounded-lg shadow-sm border">
+            <p>Welcome, Administrator. System Operational.</p>
+            <button onclick="Auth.logout()" class="mt-4 bg-red-600 text-white px-4 py-2 rounded">Logout</button>
         </div>
     </div>
 
-    <!-- ============================================== -->
-    <!-- VIEW: AUTHENTICATION (LOGIN / REGISTER)        -->
-    <!-- ============================================== -->
-    <div id="view-auth" class="min-h-screen flex items-center justify-center p-4">
-        <div class="glass-panel w-full max-w-md rounded-3xl p-8 animate-slide-up relative overflow-hidden">
-            <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-brand-blue via-brand-yellow to-brand-green"></div>
-            
-            <div class="text-center mb-8">
-                <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-blue-100 text-brand-blue text-3xl mb-4 shadow-inner">
-                    <i class="fa-solid fa-network-wired"></i>
-                </div>
-                <h1 class="text-3xl font-display font-bold text-gray-900 dark:text-white">Nexus Hub</h1>
-                <p class="text-sm text-gray-500 dark:text-gray-400 mt-2">Admin Intelligence Portal</p>
-            </div>
-
-            <!-- Login Form -->
-            <form id="form-login" class="space-y-4">
-                <div>
-                    <label class="block text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wide mb-1">Admin Email</label>
-                    <input type="email" id="login-email" class="w-full px-4 py-3 rounded-xl input-glass" placeholder="admin@nexus.co.za" required>
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wide mb-1">Password</label>
-                    <input type="password" id="login-pass" class="w-full px-4 py-3 rounded-xl input-glass" placeholder="••••••••" required>
-                </div>
-                <div class="flex items-center justify-between text-sm">
-                    <label class="flex items-center text-gray-600 dark:text-gray-400 cursor-pointer">
-                        <input type="checkbox" class="mr-2 rounded text-brand-blue focus:ring-brand-blue"> Remember me
-                    </label>
-                    <a href="#" class="text-brand-blue hover:underline font-medium">Forgot Password?</a>
-                </div>
-                <button type="submit" class="w-full bg-brand-blue hover:bg-blue-600 text-white font-bold py-3 px-4 rounded-xl shadow-lg transition-all transform hover:-translate-y-1 flex justify-center items-center gap-2">
-                    <i class="fa-solid fa-right-to-bracket"></i> Secure Admin Login
-                </button>
-            </form>
-
-            <!-- Register Form (Hidden by default) -->
-            <form id="form-register" class="space-y-4 hidden-view">
-                <div class="mb-4 text-center">
-                    <span class="bg-blue-100 text-brand-blue px-4 py-1 rounded-full text-xs font-bold uppercase tracking-wide">Administrator Registration</span>
-                </div>
-                
-                <div>
-                    <label class="block text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wide mb-1">Admin Full Name</label>
-                    <input type="text" id="reg-name" class="w-full px-4 py-3 rounded-xl input-glass" placeholder="Admin Name" required>
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wide mb-1">Admin Email</label>
-                    <input type="email" id="reg-email" class="w-full px-4 py-3 rounded-xl input-glass" placeholder="admin@nexus.co.za" required>
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wide mb-1">Secure Password</label>
-                    <input type="password" id="reg-pass" class="w-full px-4 py-3 rounded-xl input-glass" placeholder="••••••••" minlength="6" required>
-                </div>
-                <button type="submit" class="w-full bg-brand-green hover:bg-green-600 text-white font-bold py-3 px-4 rounded-xl shadow-lg transition-all transform hover:-translate-y-1">
-                    Register Admin Account
-                </button>
-            </form>
-
-            <div class="mt-6 text-center text-sm text-gray-600 dark:text-gray-400">
-                <span id="auth-switch-text">New administrator?</span> 
-                <button onclick="UI.toggleAuth()" class="text-brand-blue font-bold hover:underline" id="btn-auth-switch">Register Here</button>
-            </div>
-            
-            <!-- Quick Demo Login -->
-            <div class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700 flex flex-wrap justify-center gap-2">
-                <button onclick="Auth.demoLogin('admin@nexus.co.za')" class="text-xs bg-gray-200 dark:bg-gray-700 px-4 py-2 rounded-full hover:bg-gray-300 dark:hover:bg-gray-600 font-bold transition">Admin Demo Login</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- ============================================== -->
-    <!-- VIEW: MAIN DASHBOARD LAYOUT                    -->
-    <!-- ============================================== -->
-    <div id="view-dashboard" class="hidden-view min-h-screen flex flex-col md:flex-row">
-        
-        <!-- Sidebar Navigation -->
-        <aside class="w-full md:w-64 glass-panel md:min-h-screen border-r border-gray-200 dark:border-gray-700 flex flex-col sticky top-0 z-30">
-            <div class="p-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
-                <div class="font-display font-bold text-xl text-brand-blue flex items-center gap-2">
-                    <i class="fa-solid fa-network-wired"></i> Nexus
-                </div>
-                <button class="md:hidden text-gray-500" onclick="document.getElementById('mobile-menu').classList.toggle('hidden')">
-                    <i class="fa-solid fa-bars text-xl"></i>
-                </button>
-            </div>
-            
-            <div id="mobile-menu" class="hidden md:flex flex-col flex-1 py-4 overflow-y-auto">
-                <!-- User Profile Snippet -->
-                <div class="px-6 pb-4 mb-2 border-b border-gray-200 dark:border-gray-700 text-center">
-                    <div class="w-16 h-16 mx-auto bg-gradient-to-br from-brand-blue to-purple-500 rounded-full flex items-center justify-center text-white text-xl font-bold shadow-md mb-2" id="nav-avatar">A</div>
-                    <h3 class="font-semibold text-gray-800 dark:text-gray-100 truncate" id="nav-name">Admin User</h3>
-                    <span class="text-xs font-medium px-2 py-1 bg-blue-100 text-blue-800 rounded-full mt-1 inline-block" id="nav-role">Administrator</span>
-                </div>
-
-                <!-- Dynamic Nav Links -->
-                <nav class="flex-1 px-4 space-y-1" id="nav-links">
-                    <!-- Injected via JS based on role -->
-                </nav>
-
-                <div class="px-4 mt-auto pt-4 border-t border-gray-200 dark:border-gray-700">
-                    <button onclick="UI.toggleTheme()" class="w-full text-left px-4 py-2 text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors flex items-center gap-3">
-                        <i class="fa-solid fa-moon"></i> Toggle Theme
-                    </button>
-                    <button onclick="Auth.logout()" class="w-full text-left px-4 py-2 mt-1 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors flex items-center gap-3 font-semibold">
-                        <i class="fa-solid fa-arrow-right-from-bracket"></i> Secure Sign Out
-                    </button>
-                </div>
-            </div>
-        </aside>
-
-        <!-- Main Content Area -->
-        <main class="flex-1 p-4 md:p-8 overflow-y-auto h-screen relative" id="main-content">
-            
-            <!-- PANEL: ADMIN DASHBOARD -->
-            <div id="panel-admin" class="hidden-view animate-fade-in space-y-6">
-                <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
-                    <div>
-                        <h2 class="text-2xl font-display font-bold text-gray-800 dark:text-white">Platform Intelligence</h2>
-                        <p class="text-gray-500 dark:text-gray-400 text-sm">Real-time recruitment analytics and system health.</p>
-                    </div>
-                    
-                    <!-- Database Controls -->
-                    <div class="mt-4 md:mt-0 flex gap-2" id="admin-db-controls">
-                        <button onclick="DB.exportBackup()" class="bg-gray-800 dark:bg-gray-700 text-white px-4 py-2 rounded-lg text-sm font-medium hover:shadow-lg transition-all"><i class="fa-solid fa-download mr-1"></i> Export DB</button>
-                        <button onclick="document.getElementById('import-db-file').click()" class="bg-brand-blue text-white px-4 py-2 rounded-lg text-sm font-medium hover:shadow-lg transition-all"><i class="fa-solid fa-upload mr-1"></i> Import DB</button>
-                        <input type="file" id="import-db-file" class="hidden" accept=".json" onchange="DB.importBackup(event)">
-                    </div>
-                </div>
-
-                <!-- KPI Cards -->
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                    <div class="glass-panel p-5 rounded-2xl border-l-4 border-l-brand-blue flex items-center justify-between">
-                        <div><p class="text-sm text-gray-500 font-semibold uppercase">Total Candidates</p><h3 class="text-3xl font-bold mt-1" id="kpi-candidates">0</h3></div>
-                        <div class="w-12 h-12 rounded-full bg-blue-100 text-brand-blue flex items-center justify-center text-xl"><i class="fa-solid fa-users"></i></div>
-                    </div>
-                    <div class="glass-panel p-5 rounded-2xl border-l-4 border-l-brand-green flex items-center justify-between">
-                        <div><p class="text-sm text-gray-500 font-semibold uppercase">Active Employers</p><h3 class="text-3xl font-bold mt-1" id="kpi-employers">0</h3></div>
-                        <div class="w-12 h-12 rounded-full bg-green-100 text-brand-green flex items-center justify-center text-xl"><i class="fa-solid fa-building"></i></div>
-                    </div>
-                    <div class="glass-panel p-5 rounded-2xl border-l-4 border-l-brand-yellow flex items-center justify-between">
-                        <div><p class="text-sm text-gray-500 font-semibold uppercase">Open Vacancies</p><h3 class="text-3xl font-bold mt-1" id="kpi-jobs">0</h3></div>
-                        <div class="w-12 h-12 rounded-full bg-yellow-100 text-brand-yellow flex items-center justify-center text-xl"><i class="fa-solid fa-briefcase"></i></div>
-                    </div>
-                    <div class="glass-panel p-5 rounded-2xl border-l-4 border-l-purple-500 flex items-center justify-between">
-                        <div><p class="text-sm text-gray-500 font-semibold uppercase">AI Match Rate</p><h3 class="text-3xl font-bold mt-1">94%</h3></div>
-                        <div class="w-12 h-12 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center text-xl"><i class="fa-solid fa-brain"></i></div>
-                    </div>
-                </div>
-
-                <!-- Charts -->
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
-                    <div class="glass-panel p-5 rounded-2xl">
-                        <h3 class="font-semibold text-gray-800 dark:text-gray-200 mb-4">Demographics: Employment Status</h3>
-                        <div class="relative h-64"><canvas id="chart-status"></canvas></div>
-                    </div>
-                    <div class="glass-panel p-5 rounded-2xl">
-                        <h3 class="font-semibold text-gray-800 dark:text-gray-200 mb-4">Top Platform Skills</h3>
-                        <div class="relative h-64"><canvas id="chart-skills"></canvas></div>
-                    </div>
-                </div>
-                
-                <!-- System Logs / Recent Activity -->
-                <div class="glass-panel p-5 rounded-2xl mt-6">
-                    <h3 class="font-semibold text-gray-800 dark:text-gray-200 mb-4">Recent AI Activity Logs</h3>
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-                            <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-800/50 dark:text-gray-300 rounded-t-lg">
-                                <tr><th class="px-4 py-3">Timestamp</th><th class="px-4 py-3">Event</th><th class="px-4 py-3">User ID</th><th class="px-4 py-3">AI Confidence</th></tr>
-                            </thead>
-                            <tbody id="admin-logs-body">
-                                <!-- Dynamic rows -->
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-            <!-- PANEL: ADVANCED SEARCH / RECRUITER DB -->
-            <div id="panel-search" class="hidden-view animate-fade-in space-y-4 max-w-6xl mx-auto">
-                <h2 class="text-2xl font-display font-bold">Nexus Universal Search</h2>
-                
-                <div class="glass-panel p-4 rounded-xl flex flex-wrap gap-3 items-end border-l-4 border-l-brand-blue">
-                    <div class="flex-1 min-w-[200px]">
-                        <label class="block text-xs font-semibold text-gray-500 mb-1">Semantic Search</label>
-                        <input type="text" id="search-query" class="w-full px-3 py-2 rounded-lg input-glass" placeholder="e.g. Unemployed IT graduates in Gauteng">
-                    </div>
-                    <div class="w-32">
-                        <label class="block text-xs font-semibold text-gray-500 mb-1">Min Score</label>
-                        <input type="number" id="search-score" class="w-full px-3 py-2 rounded-lg input-glass" placeholder="0-100">
-                    </div>
-                    <div>
-                        <button onclick="AI.performUniversalSearch()" class="bg-brand-blue text-white px-6 py-2 rounded-lg font-semibold hover:shadow-lg transition-all h-[42px]"><i class="fa-solid fa-search"></i> Search</button>
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="search-results-container">
-                    <!-- Search Results -->
-                    <div class="text-center col-span-full py-12 text-gray-500">
-                        <i class="fa-solid fa-database text-4xl mb-3 opacity-50"></i>
-                        <p>Enter query to search the intelligence database.</p>
-                    </div>
-                </div>
-            </div>
-
-        </main>
-    </div>
-
-    <!-- ============================================== -->
-    <!-- MODALS                                         -->
-    <!-- ============================================== -->
-    
-    <!-- Modal Backdrop -->
-    <div id="modal-backdrop" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden opacity-0 transition-opacity flex items-center justify-center p-4">
-
-        <!-- Candidate Preview Modal -->
-        <div id="modal-cand-preview" class="modal-content glass-panel w-full max-w-2xl rounded-2xl shadow-2xl p-6 hidden transform scale-95 transition-transform">
-            <!-- Content injected dynamically via UI.showCandidate() -->
-        </div>
-
-    </div>
-
-    <!-- ============================================== -->
-    <!-- APPLICATION LOGIC (JavaScript)                 -->
-    <!-- ============================================== -->
     <script>
         // -----------------------------------------
-        // 1. UTILITIES & CONFIG
-        // -----------------------------------------
-        const Utils = {
-            escapeHtml: (unsafe) => (unsafe || '').toString().replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;"),
-            generateId: () => 'id_' + Math.random().toString(36).substr(2, 9),
-            hashPassword: async (password) => {
-                const encoder = new TextEncoder();
-                const data = encoder.encode(password);
-                const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-                const hashArray = Array.from(new Uint8Array(hashBuffer));
-                return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-            },
-            showToast: (message, type = 'info') => {
-                const container = document.getElementById('toast-container');
-                const toast = document.createElement('div');
-                const colors = { info: 'bg-blue-500', success: 'bg-brand-green', error: 'bg-brand-red', warning: 'bg-brand-yellow' };
-                const icons = { info: 'fa-info-circle', success: 'fa-check-circle', error: 'fa-exclamation-circle', warning: 'fa-exclamation-triangle' };
-                
-                toast.className = `${colors[type]} text-white px-4 py-3 rounded-lg shadow-lg flex items-center gap-3 transform transition-all duration-300 translate-x-full opacity-0 max-w-sm`;
-                toast.innerHTML = `<i class="fa-solid ${icons[type]}"></i> <span class="text-sm font-medium">${Utils.escapeHtml(message)}</span>`;
-                
-                container.appendChild(toast);
-                // Animate in
-                setTimeout(() => { toast.classList.remove('translate-x-full', 'opacity-0'); }, 10);
-                // Remove
-                setTimeout(() => {
-                    toast.classList.add('translate-x-full', 'opacity-0');
-                    setTimeout(() => toast.remove(), 300);
-                }, 3000);
-            },
-            formatDate: (dateStr) => new Date(dateStr).toLocaleDateString('en-ZA', { year: 'numeric', month: 'short', day: 'numeric' })
-        };
-
-        // -----------------------------------------
-        // 2. OFFLINE DATABASE (IndexedDB Wrapper)
+        // 1. DATABASE LAYER
         // -----------------------------------------
         const DB = {
-            name: 'Nexus_AI_DB',
-            version: 1,
             db: null,
             init: () => {
-                return new Promise((resolve, reject) => {
-                    const request = indexedDB.open(DB.name, DB.version);
-                    request.onupgradeneeded = (e) => {
-                        const db = e.target.result;
-                        if (!db.objectStoreNames.contains('users')) db.createObjectStore('users', { keyPath: 'id' });
-                        if (!db.objectStoreNames.contains('jobs')) db.createObjectStore('jobs', { keyPath: 'id' });
-                        if (!db.objectStoreNames.contains('applications')) db.createObjectStore('applications', { keyPath: 'id' });
-                        if (!db.objectStoreNames.contains('logs')) db.createObjectStore('logs', { keyPath: 'id' });
-                    };
-                    request.onsuccess = (e) => {
-                        DB.db = e.target.result;
-                        DB.seedInitialData().then(resolve);
-                    };
-                    request.onerror = (e) => reject(e.target.error);
+                return new Promise((resolve) => {
+                    const req = indexedDB.open('Nexus_Admin_DB', 1);
+                    req.onupgradeneeded = e => e.target.result.createObjectStore('users', { keyPath: 'id' });
+                    req.onsuccess = e => { DB.db = e.target.result; resolve(); };
                 });
             },
-            exec: (storeName, mode, callback) => {
-                return new Promise((resolve, reject) => {
-                    const tx = DB.db.transaction(storeName, mode);
-                    const store = tx.objectStore(storeName);
-                    const req = callback(store);
-                    if(req) {
-                        req.onsuccess = () => resolve(req.result);
-                        req.onerror = () => reject(req.error);
-                    } else {
-                        tx.oncomplete = () => resolve();
-                        tx.onerror = () => reject(tx.error);
-                    }
+            async getAll(store) {
+                return new Promise(res => {
+                    const tx = DB.db.transaction(store, 'readonly');
+                    const req = tx.objectStore(store).getAll();
+                    req.onsuccess = () => res(req.result);
                 });
             },
-            put: (store, data) => DB.exec(store, 'readwrite', s => s.put(data)),
-            get: (store, id) => DB.exec(store, 'readonly', s => s.get(id)),
-            getAll: (store) => DB.exec(store, 'readonly', s => s.getAll()),
-            delete: (store, id) => DB.exec(store, 'readwrite', s => s.delete(id)),
-            log: async (event, userId = 'system', confidence = 'N/A') => {
-                await DB.put('logs', { id: Utils.generateId(), timestamp: new Date().toISOString(), event, userId, confidence });
-            },
-            seedInitialData: async () => {
-                const users = await DB.getAll('users');
-                if (users.length === 0) {
-                    // Seed Default Admin
-                    await DB.put('users', {
-                        id: 'admin_1', role: 'admin', name: 'System Admin', email: 'admin@nexus.co.za',
-                        passwordHash: await Utils.hashPassword('admin123')
-                    });
-                    
-                    // Seed Dummy Data so the Admin dashboard isn't completely empty
-                    await DB.put('users', {
-                        id: 'emp_1', role: 'employer', name: 'TechCorp SA', email: 'emp@nexus.co.za',
-                        passwordHash: await Utils.hashPassword('emp123') // They can no longer log in
-                    });
-                    await DB.put('users', {
-                        id: 'cand_1', role: 'candidate', name: 'Jane Doe', email: 'cand@nexus.co.za',
-                        passwordHash: await Utils.hashPassword('cand123'), // They can no longer log in
-                        profile: { 
-                            skills: ['JavaScript', 'HTML', 'CSS', 'React'], province: 'GP', town: 'Pretoria',
-                            license: 'Code 8', education: 'BSc Computer Science', overallScore: 88,
-                            scores: { employability: 90, skills: 85, experience: 80, readiness: 95 }
-                        }
-                    });
-                    await DB.put('jobs', {
-                        id: 'job_1', employerId: 'emp_1', title: 'Junior Frontend Developer', desc: 'Looking for React dev.',
-                        skills: ['JavaScript', 'React', 'CSS'], loc: 'Pretoria, GP', minScore: 70, date: new Date().toISOString()
-                    });
-                }
-            },
-            exportBackup: async () => {
-                try {
-                    const data = {
-                        users: await DB.getAll('users'),
-                        jobs: await DB.getAll('jobs'),
-                        applications: await DB.getAll('applications'),
-                        logs: await DB.getAll('logs')
-                    };
-                    const blob = new Blob([JSON.stringify(data)], {type: "application/json"});
-                    const url = URL.createObjectURL(blob);
-                    const a = document.createElement('a');
-                    a.href = url; a.download = `nexus_backup_${new Date().toISOString().split('T')[0]}.json`;
-                    a.click();
-                    Utils.showToast("Database exported successfully", "success");
-                } catch(e) { Utils.showToast("Export failed", "error"); }
-            },
-            importBackup: async (e) => {
-                const file = e.target.files[0];
-                if (!file) return;
-                const reader = new FileReader();
-                reader.onload = async (event) => {
-                    try {
-                        const data = JSON.parse(event.target.result);
-                        for (const key of ['users', 'jobs', 'applications', 'logs']) {
-                            if (data[key]) {
-                                for (const item of data[key]) await DB.put(key, item);
-                            }
-                        }
-                        Utils.showToast("Database restored successfully. Reloading...", "success");
-                        setTimeout(() => window.location.reload(), 1500);
-                    } catch(err) { Utils.showToast("Invalid backup file", "error"); }
-                };
-                reader.readAsText(file);
+            async put(store, data) {
+                return new Promise(res => {
+                    const tx = DB.db.transaction(store, 'readwrite');
+                    tx.objectStore(store).put(data);
+                    tx.oncomplete = () => res();
+                });
             }
         };
 
         // -----------------------------------------
-        // 3. AUTHENTICATION SERVICE
+        // 2. AUTHENTICATION LAYER
         // -----------------------------------------
         const Auth = {
-            currentUser: null,
-            login: async (email, password) => {
+            async hash(str) {
+                const msg = new TextEncoder().encode(str);
+                const hash = await crypto.subtle.digest('SHA-256', msg);
+                return Array.from(new Uint8Array(hash)).map(b => b.toString(16).padStart(2, '0')).join('');
+            },
+            async register(name, email, pass) {
                 const users = await DB.getAll('users');
-                const hash = await Utils.hashPassword(password);
-                const user = users.find(u => u.email === email && u.passwordHash === hash);
+                if (users.filter(u => u.role === 'admin').length >= 3) return alert('Error: Max 3 Admins reached.');
+                if (users.find(u => u.email === email)) return alert('Error: User already exists.');
                 
-                // Strictly allow ONLY 'admin' role to log in
-                if (user && user.role === 'admin') {
-                    Auth.currentUser = user;
-                    sessionStorage.setItem('nexus_session', JSON.stringify(user));
-                    await DB.log('Admin Login', user.id, '100%');
-                    UI.initDashboard();
-                } else {
-                    Utils.showToast('Invalid credentials or unauthorized role (Admins only).', 'error');
-                }
-            },
-            register: async (name, email, password) => {
-                const users = await DB.getAll('users');
-                const role = 'admin'; // Hardcoded Admin registration
-                
-                // STRICT RULE: Enforce maximum of 3 Admins
-                const adminCount = users.filter(u => u.role === 'admin').length;
-                if (adminCount >= 3) {
-                    return Utils.showToast('Registration restricted: System maximum of 3 Admins reached.', 'error');
-                }
-
-                if (users.find(u => u.email === email)) return Utils.showToast('Email already in use', 'error');
-                
-                const newUser = {
-                    id: Utils.generateId(), role, name, email,
-                    passwordHash: await Utils.hashPassword(password),
-                    profile: null,
-                    created: new Date().toISOString()
-                };
-                
-                await DB.put('users', newUser);
-                await DB.log('New Admin Registered', newUser.id, '100%');
-                Utils.showToast('Admin registration successful! Logging in...', 'success');
-                Auth.login(email, password);
-            },
-            logout: () => {
-                sessionStorage.removeItem('nexus_session');
-                Auth.currentUser = null;
-                UI.showView('view-auth');
-            },
-            checkSession: () => {
-                const sess = sessionStorage.getItem('nexus_session');
-                if (sess) {
-                    const user = JSON.parse(sess);
-                    if (user.role !== 'admin') return false; // Secondary failsafe
-                    Auth.currentUser = user;
-                    UI.initDashboard();
-                    return true;
-                }
-                return false;
-            },
-            demoLogin: (email) => {
-                document.getElementById('login-email').value = email;
-                document.getElementById('login-pass').value = email.split('@')[0] + '123'; 
-                document.getElementById('form-login').dispatchEvent(new Event('submit'));
-            }
-        };
-
-        // -----------------------------------------
-        // 4. MOCK AI ENGINE 
-        // -----------------------------------------
-        const AI = {
-            // Built-in Chat Assistant Logic
-            handleQuery: async () => {
-                const input = document.getElementById('ai-chat-input');
-                const query = input.value.trim().toLowerCase();
-                if(!query) return;
-                
-                UI.addChatMessage(query, 'user');
-                input.value = '';
-                
-                // Simulate AI Thinking
-                setTimeout(async () => {
-                    let reply = "I couldn't quite analyze that request. Try 'show jobs' or 'top candidates'.";
-                    
-                    if (query.includes('job') || query.includes('vacanc')) {
-                        const jobs = await DB.getAll('jobs');
-                        reply = `I found ${jobs.length} active vacancies in the database. <br>${jobs.map(j => `• ${j.title} (${j.loc})`).join('<br>')}`;
-                    } 
-                    else if (query.includes('candidate') || query.includes('graduate')) {
-                        const users = await DB.getAll('users');
-                        const cands = users.filter(u => u.role === 'candidate');
-                        reply = `There are ${cands.length} candidates registered in the DB. Top profiles:<br>${cands.slice(0,3).map(c => `• ${c.name} (Score: ${c.profile?.overallScore || 'N/A'})`).join('<br>')}`;
-                    }
-                    else if (query.includes('unemployed')) {
-                        reply = "Filtering by 'Unemployed' status. 65% of our database matches this criteria currently. Go to Universal Search to view the list.";
-                    }
-
-                    UI.addChatMessage(reply, 'ai');
-                    await DB.log('Admin AI Query', Auth.currentUser?.id, '85%');
-                }, 800);
-            },
-
-            performUniversalSearch: async () => {
-                const query = document.getElementById('search-query').value.toLowerCase();
-                const minScore = parseInt(document.getElementById('search-score').value) || 0;
-                const container = document.getElementById('search-results-container');
-                container.innerHTML = '<div class="col-span-full text-center py-8"><i class="fa-solid fa-circle-notch fa-spin text-3xl text-brand-blue"></i><p class="mt-2 text-gray-500">AI semantic search running...</p></div>';
-
-                const users = await DB.getAll('users');
-                const candidates = users.filter(u => u.role === 'candidate');
-                
-                // NLP Mock Filter
-                const results = candidates.filter(c => {
-                    const profStr = JSON.stringify(c.profile || {}).toLowerCase() + ' ' + c.name.toLowerCase();
-                    const matchQuery = query === '' || query.split(' ').some(word => word.length > 2 && profStr.includes(word));
-                    const matchScore = (c.profile?.overallScore || 0) >= minScore;
-                    return matchQuery && matchScore;
+                await DB.put('users', {
+                    id: Date.now().toString(),
+                    name, email,
+                    role: 'admin',
+                    password: await Auth.hash(pass)
                 });
-
-                setTimeout(() => {
-                    if (results.length === 0) {
-                        container.innerHTML = '<div class="col-span-full text-center py-8 text-gray-500">No matching profiles found in intelligence hub.</div>';
-                        return;
-                    }
-                    container.innerHTML = results.map(c => `
-                        <div class="glass-panel p-4 rounded-xl border-t-4 border-t-brand-blue hover:-translate-y-1 transition-transform cursor-pointer" onclick="UI.showCandidate('${c.id}')">
-                            <div class="flex justify-between items-start">
-                                <div>
-                                    <h4 class="font-bold text-gray-800 dark:text-white">${c.name}</h4>
-                                    <p class="text-xs text-gray-500">${c.profile?.town || 'Location unknown'} • ${c.profile?.education || 'No Edu Listed'}</p>
-                                </div>
-                                <span class="bg-blue-100 text-brand-blue px-2 py-1 rounded-full text-xs font-bold">${c.profile?.overallScore || 0}</span>
-                            </div>
-                            <div class="mt-3 flex flex-wrap gap-1">
-                                ${(c.profile?.skills || []).slice(0,3).map(s => `<span class="text-[10px] bg-gray-200 dark:bg-gray-700 px-2 py-1 rounded">${s}</span>`).join('')}
-                            </div>
-                        </div>
-                    `).join('');
-                }, 600);
-            }
+                alert('Admin Created! You can now login.');
+                UI.toggleMode(); // Switch back to login
+            },
+            async login(email, pass) {
+                const users = await DB.getAll('users');
+                const user = users.find(u => u.email === email && u.password === await Auth.hash(pass));
+                if (user && user.role === 'admin') {
+                    document.getElementById('view-auth').classList.add('hidden');
+                    document.getElementById('view-dashboard').classList.remove('hidden');
+                } else {
+                    alert('Invalid Login or Unauthorized.');
+                }
+            },
+            logout: () => location.reload()
         };
 
         // -----------------------------------------
-        // 5. UI CONTROLLER
+        // 3. UI LAYER
         // -----------------------------------------
         const UI = {
-            init: () => {
-                // Event Listeners
-                document.getElementById('form-login').addEventListener('submit', (e) => {
-                    e.preventDefault();
-                    Auth.login(document.getElementById('login-email').value, document.getElementById('login-pass').value);
-                });
-                
-                // Modified Registration Handler (Admins only)
-                document.getElementById('form-register').addEventListener('submit', (e) => {
-                    e.preventDefault();
-                    Auth.register(
-                        document.getElementById('reg-name').value,
-                        document.getElementById('reg-email').value,
-                        document.getElementById('reg-pass').value
-                    );
-                });
-
-                // Initial Check
-                if (!Auth.checkSession()) UI.showView('view-auth');
-            },
-
-            showView: (viewId) => {
-                ['view-auth', 'view-dashboard'].forEach(id => document.getElementById(id).classList.add('hidden-view'));
-                document.getElementById(viewId).classList.remove('hidden-view');
-            },
-
-            showPanel: (panelId) => {
-                ['panel-admin', 'panel-search'].forEach(id => {
-                    const el = document.getElementById(id);
-                    if(el) el.classList.add('hidden-view');
-                });
-                document.getElementById(panelId).classList.remove('hidden-view');
-                if(window.innerWidth < 768) document.getElementById('mobile-menu').classList.add('hidden'); // hide sidebar on mobile select
-            },
-
-            toggleAuth: () => {
-                const loginForm = document.getElementById('form-login');
-                const regForm = document.getElementById('form-register');
-                const isLogin = !loginForm.classList.contains('hidden-view');
-                
-                if (isLogin) {
-                    loginForm.classList.add('hidden-view');
-                    regForm.classList.remove('hidden-view');
-                    document.getElementById('auth-switch-text').innerText = "Already have an account?";
-                    document.getElementById('btn-auth-switch').innerText = "Sign In";
-                } else {
-                    regForm.classList.add('hidden-view');
-                    loginForm.classList.remove('hidden-view');
-                    document.getElementById('auth-switch-text').innerText = "New administrator?";
-                    document.getElementById('btn-auth-switch').innerText = "Register Here";
-                }
-            },
-
-            toggleTheme: () => {
-                document.documentElement.classList.toggle('dark');
-            },
-
-            toggleChat: () => {
-                const panel = document.getElementById('ai-chat-panel');
-                panel.classList.toggle('hidden');
-            },
-
-            addChatMessage: (msg, sender) => {
-                const box = document.getElementById('ai-chat-messages');
-                const div = document.createElement('div');
-                if (sender === 'user') {
-                    div.className = "bg-brand-blue text-white p-3 rounded-lg rounded-tr-none self-end max-w-[85%] shadow-sm";
-                    div.innerHTML = Utils.escapeHtml(msg);
-                } else {
-                    div.className = "bg-gray-100 dark:bg-gray-800 p-3 rounded-lg rounded-tl-none self-start max-w-[85%] text-gray-800 dark:text-gray-200 shadow-sm";
-                    div.innerHTML = msg; // AI returns basic HTML
-                }
-                box.appendChild(div);
-                box.scrollTop = box.scrollHeight;
-            },
-
-            initDashboard: () => {
-                UI.showView('view-dashboard');
-                const user = Auth.currentUser;
-                
-                // Setup Sidebar
-                document.getElementById('nav-name').innerText = user.name;
-                document.getElementById('nav-avatar').innerText = user.name.charAt(0);
-                
-                const navLinks = document.getElementById('nav-links');
-                navLinks.innerHTML = '';
-                
-                // Admin Routing
-                navLinks.innerHTML += `<button onclick="UI.showPanel('panel-admin')" class="w-full text-left px-4 py-3 rounded-lg font-medium text-brand-blue bg-blue-50 dark:bg-blue-900/20"><i class="fa-solid fa-chart-pie w-6"></i> Analytics DB</button>`;
-                navLinks.innerHTML += `<button onclick="UI.showPanel('panel-search')" class="w-full text-left px-4 py-3 rounded-lg font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"><i class="fa-solid fa-search w-6"></i> Candidate Search</button>`;
-                
-                UI.showPanel('panel-admin');
-                UI.renderAdminDashboard();
-
-                // Show floating chat button
-                document.getElementById('ai-chat-btn').classList.remove('hidden');
-            },
-
-            showCandidate: async (candId) => {
-                const cand = await DB.get('users', candId);
-                if(!cand) return;
-                const p = cand.profile || {};
-                
-                const html = `
-                    <div class="flex justify-between items-start mb-6">
-                        <div>
-                            <h3 class="text-2xl font-display font-bold text-gray-900 dark:text-white">${cand.name}</h3>
-                            <p class="text-brand-blue font-semibold">${p.education || 'Profile'}</p>
-                        </div>
-                        <button onclick="UI.hideModal()" class="text-gray-500 hover:text-gray-800 dark:hover:text-white"><i class="fa-solid fa-times text-xl"></i></button>
-                    </div>
-                    
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div class="space-y-4">
-                            <div><span class="text-xs text-gray-500 uppercase font-bold block">Contact</span><p class="text-sm"><i class="fa-solid fa-envelope mr-1 text-gray-400"></i> ${cand.email}<br><i class="fa-solid fa-phone mr-1 text-gray-400"></i> ${p.phone || 'N/A'}</p></div>
-                            <div><span class="text-xs text-gray-500 uppercase font-bold block">Location</span><p class="text-sm">${p.town || 'N/A'}, ${p.province || 'N/A'}</p></div>
-                            <div><span class="text-xs text-gray-500 uppercase font-bold block">License</span><p class="text-sm bg-gray-100 dark:bg-gray-800 inline-block px-2 py-1 rounded text-xs font-bold mt-1">${p.license || 'None'}</p></div>
-                        </div>
-                        <div class="space-y-4">
-                            <div><span class="text-xs text-gray-500 uppercase font-bold block mb-1">AI Scores</span>
-                                <div class="flex flex-wrap gap-2">
-                                    <span class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full font-bold">Overall: ${p.overallScore||0}</span>
-                                    <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full font-bold">Skills: ${p.scores?.skills||0}</span>
-                                    <span class="bg-purple-100 text-purple-800 text-xs px-2 py-1 rounded-full font-bold">Readiness: ${p.scores?.readiness||0}</span>
-                                </div>
-                            </div>
-                            <div><span class="text-xs text-gray-500 uppercase font-bold block mb-1">Skills Detected</span>
-                                <div class="flex flex-wrap gap-1">
-                                    ${(p.skills||[]).map(s => `<span class="bg-gray-200 dark:bg-gray-700 text-xs px-2 py-1 rounded">${s}</span>`).join('')}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="mt-6 flex gap-2">
-                        <a href="https://wa.me/${(p.phone||'').replace(/[^0-9]/g,'')}" target="_blank" class="flex-1 text-center bg-green-500 hover:bg-green-600 text-white py-2 rounded-lg font-bold transition"><i class="fa-brands fa-whatsapp mr-1"></i> WhatsApp</a>
-                        <button class="flex-1 bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-gray-200 py-2 rounded-lg font-bold hover:bg-gray-300 dark:hover:bg-gray-600 transition"><i class="fa-solid fa-download mr-1"></i> Download Profile</button>
-                    </div>
-                `;
-                
-                const modal = document.getElementById('modal-cand-preview');
-                modal.innerHTML = html;
-                UI.showModal('modal-cand-preview');
-            },
-
-            // --- Admin Specific ---
-            renderAdminDashboard: async () => {
-                const users = await DB.getAll('users');
-                const jobs = await DB.getAll('jobs');
-                const logs = await DB.getAll('logs');
-                
-                document.getElementById('kpi-candidates').innerText = users.filter(u=>u.role==='candidate').length;
-                document.getElementById('kpi-employers').innerText = users.filter(u=>u.role==='employer').length;
-                document.getElementById('kpi-jobs').innerText = jobs.length;
-                
-                // Logs
-                document.getElementById('admin-logs-body').innerHTML = [...logs].reverse().slice(0, 5).map(l => `
-                    <tr class="bg-white border-b dark:bg-gray-800/50 dark:border-gray-700">
-                        <td class="px-4 py-2">${Utils.formatDate(l.timestamp)}</td>
-                        <td class="px-4 py-2 font-medium">${l.event}</td>
-                        <td class="px-4 py-2 text-xs text-gray-400">${l.userId.substring(0,8)}...</td>
-                        <td class="px-4 py-2"><span class="bg-green-100 text-green-800 text-xs font-semibold px-2 py-0.5 rounded">${l.confidence}</span></td>
-                    </tr>
-                `).join('');
-
-                // Render Charts (Destroy old instances if exist)
-                if(window.chartStatusIns) window.chartStatusIns.destroy();
-                if(window.chartSkillsIns) window.chartSkillsIns.destroy();
-
-                const ctxStatus = document.getElementById('chart-status').getContext('2d');
-                window.chartStatusIns = new Chart(ctxStatus, {
-                    type: 'doughnut',
-                    data: {
-                        labels: ['Unemployed Graduates', 'Experienced Seeking', 'Employed Exploring', 'Youth / Entry Level'],
-                        datasets: [{ data: [45, 25, 15, 15], backgroundColor: ['#4285F4', '#34A853', '#FBBC05', '#EA4335'], borderWidth: 0 }]
-                    },
-                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right' } }, cutout: '70%' }
-                });
-
-                const ctxSkills = document.getElementById('chart-skills').getContext('2d');
-                window.chartSkillsIns = new Chart(ctxSkills, {
-                    type: 'bar',
-                    data: {
-                        labels: ['JavaScript', 'Admin', 'Excel', 'Customer Service', 'Management'],
-                        datasets: [{ label: 'Occurrences', data: [80, 120, 150, 110, 60], backgroundColor: '#4285F4', borderRadius: 6 }]
-                    },
-                    options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true } } }
-                });
-            },
-
-            // Modal Handlers
-            showModal: (id) => {
-                const bd = document.getElementById('modal-backdrop');
-                const modal = document.getElementById(id);
-                bd.classList.remove('hidden');
-                modal.classList.remove('hidden');
-                setTimeout(() => { bd.classList.remove('opacity-0'); modal.classList.remove('scale-95'); }, 10);
-            },
-            hideModal: () => {
-                const bd = document.getElementById('modal-backdrop');
-                const modals = document.querySelectorAll('.modal-content');
-                bd.classList.add('opacity-0');
-                modals.forEach(m => m.classList.add('scale-95'));
-                setTimeout(() => { bd.classList.add('hidden'); modals.forEach(m => m.classList.add('hidden')); }, 300);
+            isRegistering: false,
+            toggleMode: () => {
+                UI.isRegistering = !UI.isRegistering;
+                document.getElementById('auth-title').innerText = UI.isRegistering ? 'Create Admin' : 'Admin Login';
+                document.getElementById('main-btn').innerText = UI.isRegistering ? 'Register' : 'Login';
+                document.getElementById('toggle-btn').innerText = UI.isRegistering ? 'Back to Login' : 'Need to Create Admin Account?';
+                document.getElementById('in-name').classList.toggle('hidden', !UI.isRegistering);
             }
         };
 
         // -----------------------------------------
-        // 6. INITIALIZATION & PWA SETUP
+        // 4. BOOTSTRAP
         // -----------------------------------------
-        window.addEventListener('DOMContentLoaded', async () => {
-            // Initialize Database
+        window.onload = async () => {
             await DB.init();
-            
-            // Initialize UI
-            UI.init();
+            document.getElementById('auth-form').onsubmit = async (e) => {
+                e.preventDefault();
+                const name = document.getElementById('in-name').value;
+                const email = document.getElementById('in-email').value;
+                const pass = document.getElementById('in-pass').value;
 
-            // PWA Service Worker (Inline generation for single-file constraint)
-            if ('serviceWorker' in navigator) {
-                const swCode = `
-                    const CACHE = 'nexus-ai-cache-v1';
-                    self.addEventListener('install', e => e.waitUntil(caches.open(CACHE).then(c => c.addAll(['/']))));
-                    self.addEventListener('fetch', e => e.respondWith(caches.match(e.request).then(res => res || fetch(e.request))));
-                `;
-                const blob = new Blob([swCode], {type: 'application/javascript'});
-                navigator.serviceWorker.register(URL.createObjectURL(blob)).catch(console.error);
-            }
-        });
-
+                if (UI.isRegistering) {
+                    await Auth.register(name, email, pass);
+                } else {
+                    await Auth.login(email, pass);
+                }
+            };
+        };
     </script>
 </body>
 </html>
