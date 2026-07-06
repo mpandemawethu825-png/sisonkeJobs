@@ -3,103 +3,398 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Enterprise CV Intelligence Pro</title>
+    <title>Enterprise CV Intelligence Pro V3 - AI Powered</title>
+    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+    
+    <script src="https://js.puter.com/v2/"></script>
+
     <style>
-        :root { --navy: #0a192f; --royal: #2962ff; --light: #f4f7f6; }
-        body { font-family: -apple-system, sans-serif; background: var(--light); margin: 0; padding: 0; }
-        nav { background: var(--navy); color: white; padding: 1rem; display: flex; justify-content: center; gap: 20px; }
-        main { padding: 20px; max-width: 1000px; margin: auto; }
-        .card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-bottom: 20px; }
-        .drop-area { border: 2px dashed #ccc; padding: 40px; text-align: center; cursor: pointer; border-radius: 8px; }
-        table { width: 100%; border-collapse: collapse; background: white; border-radius: 8px; overflow: hidden; }
-        th, td { padding: 12px; border-bottom: 1px solid #eee; text-align: left; }
-        .btn { background: var(--royal); color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; width: 100%; font-weight: bold; }
+        :root { --navy: #0f172a; --royal: #2563eb; --light: #f8fafc; --success: #10b981; --warn: #f59e0b; --ai: #8b5cf6; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: var(--light); margin: 0; color: #333; }
+        nav { background: var(--navy); color: white; padding: 1rem; display: flex; justify-content: center; gap: 20px; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1); }
+        main { padding: 20px; max-width: 1200px; margin: auto; }
+        .card { background: white; padding: 24px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1); margin-bottom: 20px; }
+        
+        .btn { background: var(--royal); color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: 500; transition: 0.2s; }
+        .btn:hover { background: #1d4ed8; }
+        .btn-outline { background: transparent; border: 1px solid #ccc; color: #333; }
+        
+        .status { display: inline-block; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: bold; }
+        .status.ai { background: #ede9fe; color: #5b21b6; border: 1px solid #ddd6fe; }
+        .status.high { background: #dcfce7; color: #166534; }
+        .status.low { background: #fef3c7; color: #92400e; }
+        
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        th, td { padding: 12px; border-bottom: 1px solid #e2e8f0; text-align: left; }
+        th { background: #f1f5f9; font-weight: 600; }
+        
+        .drop-zone { border: 2px dashed #cbd5e1; border-radius: 12px; padding: 40px; text-align: center; cursor: pointer; transition: 0.2s; background: #f8fafc; }
+        .drop-zone:hover { border-color: var(--royal); background: #eff6ff; }
+        
+        #modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 50; }
+        .modal-content { background: white; margin: 2% auto; padding: 30px; width: 90%; max-width: 900px; border-radius: 12px; max-height: 90vh; overflow-y: auto; }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; }
+        .data-group { margin-bottom: 15px; }
+        .data-group label { display: block; font-size: 12px; color: #64748b; font-weight: bold; text-transform: uppercase; margin-bottom: 4px; }
+        .data-group input, .data-group textarea { width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 4px; box-sizing: border-box; }
+        
+        #loader { display: none; margin-top: 15px; font-weight: bold; color: var(--royal); text-align: center; padding: 20px; }
+        .spinner { display: inline-block; width: 20px; height: 20px; border: 3px solid rgba(37,99,235,0.3); border-radius: 50%; border-top-color: var(--royal); animation: spin 1s ease-in-out infinite; vertical-align: middle; margin-right: 10px; }
+        @keyframes spin { to { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
 
 <nav>
-    <button onclick="show('upload')">Scanner</button>
-    <button onclick="show('list')">Database</button>
+    <button class="btn" onclick="showView('upload')">Scanner Engine</button>
+    <button class="btn" onclick="showView('list')">Database View</button>
 </nav>
 
 <main>
     <section id="upload">
         <div class="card">
-            <h2>AI CV Processor</h2>
-            <input type="file" id="pdfInput" accept="application/pdf" style="display:none" onchange="processFile(this.files)">
-            <div class="drop-area" onclick="document.getElementById('pdfInput').click()">Click to Upload PDF CV</div>
+            <h2>Deep Semantic CV Parser (Powered by Puter AI)</h2>
+            <p>Upload a CV. The system will use LLM technology to semantically understand and map the candidate's exact First, Middle, and Last name, alongside all professional history. Works with modern multi-column, ATS, and image-based formats.</p>
+            <input type="file" id="fileInput" accept=".pdf,.docx,.txt,image/*" style="display:none" onchange="processFile(this.files[0])">
+            <div class="drop-zone" onclick="document.getElementById('fileInput').click()">
+                <strong>Click to Upload Document</strong><br><small>Supports PDF, DOCX, TXT, PNG, JPG</small>
+            </div>
+            <div id="loader"><div class="spinner"></div><span id="loaderText">Extracting text...</span></div>
         </div>
     </section>
 
     <section id="list" style="display:none;">
         <div class="card">
-            <h2>Candidate Database</h2>
-            <table id="dbTable">
-                <thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>ID Number</th><th>Action</th></tr></thead>
-                <tbody id="dbBody"></tbody>
-            </table>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <h2>Candidate Database</h2>
+                <button class="btn btn-outline" onclick="exportToCSV()">Export All to CSV</button>
+            </div>
+            <div style="overflow-x: auto;">
+                <table id="dbTable">
+                    <thead><tr><th>Full Name</th><th>Job Title</th><th>Email</th><th>Phone</th><th>Engine Status</th><th>Actions</th></tr></thead>
+                    <tbody id="dbBody"></tbody>
+                </table>
+            </div>
         </div>
     </section>
 </main>
 
+<div id="modal">
+    <div class="modal-content">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <h2 id="modalTitle">Candidate Profile Verification</h2>
+            <button class="btn btn-outline" onclick="closeModal()">Close</button>
+        </div>
+        <hr style="border: 0; border-top: 1px solid #eee; margin: 15px 0;">
+        
+        <h3 style="color: var(--royal); margin-bottom: 10px;">Identity & Contact</h3>
+        <div class="grid-3">
+            <div class="data-group"><label>First Name</label><input type="text" id="modFirst"></div>
+            <div class="data-group"><label>Middle Name(s)</label><input type="text" id="modMiddle"></div>
+            <div class="data-group"><label>Last Name / Surname</label><input type="text" id="modLast"></div>
+        </div>
+        <div class="grid-2">
+            <div class="data-group"><label>Full Name (Combined)</label><input type="text" id="modFullName"></div>
+            <div class="data-group"><label>Professional Title</label><input type="text" id="modTitle"></div>
+            <div class="data-group"><label>Email Address</label><input type="text" id="modEmail"></div>
+            <div class="data-group"><label>Phone Number</label><input type="text" id="modPhone"></div>
+            <div class="data-group"><label>Physical Address</label><input type="text" id="modAddress"></div>
+            <div class="data-group"><label>Nationality / ID</label><input type="text" id="modNat"></div>
+        </div>
+
+        <h3 style="color: var(--royal); margin-top: 20px; margin-bottom: 10px;">Professional Profile</h3>
+        <div class="grid-2">
+            <div class="data-group"><label>Skills & Competencies</label><textarea id="modSkills" rows="3"></textarea></div>
+            <div class="data-group"><label>Professional Summary</label><textarea id="modSummary" rows="3"></textarea></div>
+        </div>
+        <div class="grid-2">
+            <div class="data-group"><label>Work Experience (Companies, Dates, Roles)</label><textarea id="modExp" rows="6"></textarea></div>
+            <div class="data-group"><label>Education & Certifications</label><textarea id="modEdu" rows="6"></textarea></div>
+        </div>
+        <button class="btn" style="width: 100%; margin-top: 15px;" onclick="saveModalData()">Confirm & Save to Database</button>
+    </div>
+</div>
+
 <script>
+    // --- 1. DATABASE SETUP ---
     let db;
-    const req = indexedDB.open("CVDatabase", 1);
+    let currentEditId = null;
+    const req = indexedDB.open("EnterpriseCVDB_V3", 1);
     req.onupgradeneeded = e => e.target.result.createObjectStore("candidates", {keyPath: "id", autoIncrement: true});
     req.onsuccess = e => { db = e.target.result; renderTable(); };
 
-    function show(id) {
+    function showView(id) {
         document.getElementById('upload').style.display = id === 'upload' ? 'block' : 'none';
         document.getElementById('list').style.display = id === 'list' ? 'block' : 'none';
     }
 
-    async function processFile(files) {
-        const file = files[0];
-        const reader = new FileReader();
-        reader.onload = async function() {
-            const pdf = await pdfjsLib.getDocument(new Uint8Array(this.result)).promise;
+    function setLoader(text, show) {
+        document.getElementById('loaderText').innerText = text;
+        document.getElementById('loader').style.display = show ? 'block' : 'none';
+    }
+
+    // --- 2. MASTER PARSING WORKFLOW ---
+    async function processFile(file) {
+        if (!file) return;
+        setLoader("Extracting raw text from document...", true);
+        
+        try {
             let text = "";
-            for(let i=1; i<=pdf.numPages; i++) {
-                const page = await pdf.getPage(i);
-                const content = await page.getTextContent();
-                text += content.items.map(item => item.str).join(" ");
+            const ext = file.name.split('.').pop().toLowerCase();
+
+            // Extract Text using appropriate offline engine
+            if (ext === 'pdf') text = await parsePDF(file);
+            else if (ext === 'docx') text = await parseDOCX(file);
+            else if (['png', 'jpg', 'jpeg'].includes(ext)) text = await parseImageOCR(file);
+            else if (ext === 'txt') text = await file.text();
+            else throw new Error("Unsupported format");
+
+            // Attempt Semantic Puter AI Extraction
+            setLoader("Puter AI is semantically analyzing the CV...", true);
+            let parsedData = await extractWithPuterAI(text);
+            
+            // Fallback to Offline Heuristics if AI fails or is offline
+            if (!parsedData) {
+                setLoader("AI Unavailable. Running offline heuristic analysis...", true);
+                parsedData = extractHeuristicsOffline(text);
             }
-            extractData(text);
-        };
-        reader.readAsArrayBuffer(file);
+            
+            // Save & Render
+            db.transaction("candidates", "readwrite").objectStore("candidates").add(parsedData).onsuccess = () => {
+                setLoader("", false);
+                renderTable();
+                showView('list');
+            };
+        } catch (error) {
+            console.error(error);
+            alert("Error processing file: " + error.message);
+            setLoader("", false);
+        }
     }
 
-    function extractData(text) {
-        const candidate = {
-            name: text.substring(0, 30).trim(),
-            email: (text.match(/[\w.-]+@[\w.-]+\.[a-zA-Z]{2,6}/) || ["N/A"])[0],
-            phone: (text.match(/(?:\+?27|0)[6-8][0-9]\s?\d{3}\s?\d{4}/) || ["N/A"])[0],
-            idNumber: (text.match(/\d{13}/) || ["N/A"])[0]
-        };
-        db.transaction("candidates", "readwrite").objectStore("candidates").add(candidate).onsuccess = () => {
-            alert("Candidate Saved Successfully!");
-            renderTable();
-            show('list');
-        };
+    // --- 3. TEXT EXTRACTION UTILITIES (Offline) ---
+    async function parsePDF(file) {
+        const arrayBuffer = await file.arrayBuffer();
+        const pdf = await pdfjsLib.getDocument({data: new Uint8Array(arrayBuffer)}).promise;
+        let fullText = "";
+        for(let i=1; i<=pdf.numPages; i++) {
+            const page = await pdf.getPage(i);
+            const textContent = await page.getTextContent();
+            // Y-X Coordinate sorting to prevent multi-column merging issues
+            const items = textContent.items.map(item => ({ str: item.str, x: item.transform[4], y: item.transform[5] }))
+                                           .sort((a, b) => Math.abs(b.y - a.y) > 5 ? b.y - a.y : a.x - b.x);
+            let lastY = -1;
+            items.forEach(item => {
+                if (lastY !== -1 && Math.abs(lastY - item.y) > 5) fullText += "\n";
+                fullText += item.str + " ";
+                lastY = item.y;
+            });
+            fullText += "\n";
+        }
+        return fullText;
+    }
+    async function parseDOCX(file) {
+        const arrayBuffer = await file.arrayBuffer();
+        const result = await mammoth.extractRawText({arrayBuffer: arrayBuffer});
+        return result.value;
+    }
+    async function parseImageOCR(file) {
+        const result = await Tesseract.recognize(file, 'eng');
+        return result.data.text;
     }
 
+    // --- 4. PRIMARY ENGINE: PUTER AI (Cloud Semantic Analysis) ---
+    async function extractWithPuterAI(text) {
+        try {
+            if (typeof puter === 'undefined' || !puter.ai) return null;
+            
+            const prompt = `
+            You are a highly advanced ATS recruitment parser. Read the following CV text and extract the candidate's details.
+            Priority Requirement: Identify the candidate's exact name accurately. Do not confuse it with company names, degrees, or references.
+            Split the name correctly into First, Middle, and Last name. 
+            Format all phone numbers, remove duplicate emails, and clean up messy text.
+            If a piece of information is missing, leave the string empty "".
+            
+            Respond strictly in valid JSON format with ONLY these exact keys:
+            {
+                "fullName": "", "firstName": "", "middleName": "", "lastName": "",
+                "title": "", "email": "", "phone": "", "address": "", "nationality": "",
+                "skills": "", "summary": "", "experience": "", "education": ""
+            }
+            
+            CV Text:
+            ${text.substring(0, 12000)} // Truncated safely to fit context windows
+            `;
+
+            const response = await puter.ai.chat(prompt);
+            let jsonString = response.message.content.replace(/```json/g, '').replace(/```/g, '').trim();
+            const data = JSON.parse(jsonString);
+            
+            // Normalize & Prepare
+            data.confidence = "High (AI)";
+            return data;
+        } catch (e) {
+            console.warn("Puter AI extraction failed, triggering offline fallback:", e);
+            return null;
+        }
+    }
+
+    // --- 5. FALLBACK ENGINE: OFFLINE HEURISTICS ---
+    function extractHeuristicsOffline(rawText) {
+        const text = rawText.replace(/\r\n/g, '\n').replace(/\t/g, ' ').replace(/\s{2,}/g, ' ');
+        const lines = text.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+        
+        const data = {
+            fullName: "", firstName: "", middleName: "", lastName: "",
+            title: "", email: "", phone: "", address: "", nationality: "",
+            summary: "", experience: "", education: "", skills: "", confidence: "Fallback (Offline)"
+        };
+
+        // Contact Regex
+        const emailMatch = text.match(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/);
+        data.email = emailMatch ? emailMatch[0].toLowerCase() : "";
+        const phoneMatch = text.match(/(?:\+?27|0)[6-8][0-9]\s?\d{3}\s?\d{4}/);
+        data.phone = phoneMatch ? phoneMatch[0].replace(/\s/g, '') : "";
+        const idMatch = text.match(/\b\d{13}\b/);
+        if (idMatch) data.nationality = "ID: " + idMatch[0];
+
+        // Advanced Name Resolution
+        for (let i = 0; i < Math.min(15, lines.length); i++) {
+            const line = lines[i];
+            // Filter labels, dates, and overly long strings
+            if (!/\d/.test(line) && line.length < 40 &&
+                !/cv|resume|curriculum|profile|email|phone|address|summary|street|code/i.test(line) &&
+                line.split(' ').length >= 2 && line.split(' ').length <= 4 &&
+                /^[A-Z][a-z]+/.test(line)) {
+                
+                // Normalise Capitalisation
+                data.fullName = line.replace(/\w\S*/g, txt => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase());
+                
+                // Intelligent Split
+                const parts = data.fullName.split(" ");
+                data.firstName = parts[0];
+                if (parts.length > 2) {
+                    data.lastName = parts[parts.length - 1];
+                    data.middleName = parts.slice(1, parts.length - 1).join(" ");
+                } else if (parts.length === 2) {
+                    data.lastName = parts[1];
+                }
+                break;
+            }
+        }
+        
+        if (!data.fullName) data.confidence = "Low (Review Needed)";
+
+        // Content Sectioning
+        let currentSection = "summary";
+        const sections = { summary: [], experience: [], education: [] };
+        lines.forEach(line => {
+            const lower = line.toLowerCase();
+            if (/experience|employment|work history/i.test(lower) && line.length < 30) currentSection = "experience";
+            else if (/education|qualifications|academic/i.test(lower) && line.length < 30) currentSection = "education";
+            else if (sections[currentSection]) sections[currentSection].push(line);
+        });
+
+        data.summary = sections.summary.slice(1, 4).join(" ");
+        data.experience = sections.experience.join("\n").substring(0, 500) + "..."; // Snippet
+        data.education = sections.education.join("\n").substring(0, 500) + "...";
+        
+        return data;
+    }
+
+    // --- 6. UI & DATABASE MANAGEMENT ---
     function renderTable() {
         const body = document.getElementById('dbBody');
         body.innerHTML = "";
         db.transaction("candidates").objectStore("candidates").openCursor().onsuccess = e => {
             const cursor = e.target.result;
             if (cursor) {
-                body.innerHTML += `<tr><td>${cursor.value.name}</td><td>${cursor.value.email}</td><td>${cursor.value.phone}</td><td>${cursor.value.idNumber}</td>
-                <td><button onclick="deleteC(${cursor.value.id})">Del</button></td></tr>`;
+                const c = cursor.value;
+                let statusClass = "low";
+                if (c.confidence.includes("High (AI)")) statusClass = "ai";
+                else if (c.confidence.includes("Offline") || c.confidence === "Reviewed") statusClass = "high";
+                
+                body.innerHTML += `
+                    <tr>
+                        <td><strong>${c.fullName || '<span style="color:red">Needs Review</span>'}</strong></td>
+                        <td>${c.title ? c.title : '<small>N/A</small>'}</td>
+                        <td>${c.email}</td>
+                        <td>${c.phone}</td>
+                        <td><span class="status ${statusClass}">${c.confidence}</span></td>
+                        <td>
+                            <button class="btn" style="padding:6px 12px; font-size:12px;" onclick="openModal(${c.id})">Review Profile</button>
+                            <button class="btn btn-outline" style="padding:6px 12px; font-size:12px; border-color:red; color:red;" onclick="deleteC(${c.id})">Del</button>
+                        </td>
+                    </tr>`;
                 cursor.continue();
             }
         };
     }
 
-    function deleteC(id) {
-        db.transaction("candidates", "readwrite").objectStore("candidates").delete(id).onsuccess = renderTable;
+    function openModal(id) {
+        db.transaction("candidates").objectStore("candidates").get(id).onsuccess = e => {
+            const data = e.target.result;
+            currentEditId = id;
+            document.getElementById('modFirst').value = data.firstName || "";
+            document.getElementById('modMiddle').value = data.middleName || "";
+            document.getElementById('modLast').value = data.lastName || "";
+            document.getElementById('modFullName').value = data.fullName || "";
+            document.getElementById('modTitle').value = data.title || "";
+            document.getElementById('modEmail').value = data.email || "";
+            document.getElementById('modPhone').value = data.phone || "";
+            document.getElementById('modAddress').value = data.address || "";
+            document.getElementById('modNat').value = data.nationality || "";
+            document.getElementById('modSkills').value = data.skills || "";
+            document.getElementById('modSummary').value = data.summary || "";
+            document.getElementById('modExp').value = data.experience || "";
+            document.getElementById('modEdu').value = data.education || "";
+            document.getElementById('modal').style.display = 'block';
+        };
+    }
+
+    function saveModalData() {
+        const tx = db.transaction("candidates", "readwrite");
+        const store = tx.objectStore("candidates");
+        store.get(currentEditId).onsuccess = e => {
+            const data = e.target.result;
+            data.firstName = document.getElementById('modFirst').value;
+            data.middleName = document.getElementById('modMiddle').value;
+            data.lastName = document.getElementById('modLast').value;
+            data.fullName = document.getElementById('modFullName').value; // Auto-combined or manually overridden
+            data.title = document.getElementById('modTitle').value;
+            data.email = document.getElementById('modEmail').value;
+            data.phone = document.getElementById('modPhone').value;
+            data.address = document.getElementById('modAddress').value;
+            data.nationality = document.getElementById('modNat').value;
+            data.skills = document.getElementById('modSkills').value;
+            data.summary = document.getElementById('modSummary').value;
+            data.experience = document.getElementById('modExp').value;
+            data.education = document.getElementById('modEdu').value;
+            data.confidence = "Reviewed & Verified";
+            
+            store.put(data).onsuccess = () => { closeModal(); renderTable(); };
+        };
+    }
+
+    function closeModal() { document.getElementById('modal').style.display = 'none'; }
+    function deleteC(id) { db.transaction("candidates", "readwrite").objectStore("candidates").delete(id).onsuccess = renderTable; }
+
+    // --- 7. EXPORT ARCHITECTURE ---
+    function exportToCSV() {
+        db.transaction("candidates").objectStore("candidates").getAll().onsuccess = e => {
+            let csv = "First Name,Middle Name,Last Name,Full Name,Job Title,Email,Phone,Nationality,Address\n";
+            e.target.result.forEach(c => {
+                csv += `"${c.firstName}","${c.middleName}","${c.lastName}","${c.fullName}","${c.title}","${c.email}","${c.phone}","${c.nationality}","${c.address}"\n`;
+            });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(new Blob([csv], {type: 'text/csv'}));
+            a.download = "Candidate_Intelligence_Export.csv";
+            a.click();
+        };
     }
 </script>
 </body>
